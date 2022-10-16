@@ -1,14 +1,23 @@
-html,body,#app{
+html,
+body,
+#app {
     height: 100%;
     margin: 0px;
     padding: 0px;
 }
-.el-breadcrumb{
+
+.el-input {
+    margin-bottom: 0px;
+}
+
+.el-breadcrumb {
     margin-bottom: 20px;
 }
-.el-cascader-menu{
+
+.el-cascader-menu {
     height: 600px;
 }
-.ql-editor{
+
+.ql-editor {
     min-height: 400px;
 }

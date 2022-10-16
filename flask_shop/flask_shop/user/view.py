@@ -52,13 +52,22 @@ class User(Resource):
             return to_dict_msg(20000)
     def put(self):
         try:
+            # 获取参数
             id  = int(request.form.get('id').strip())
+            name=request.form.get("name").strip() if request.form.get('name') else ''
+            nick_name=request.form.get('nick_name').strip() if request.form.get('nick_name') else ''
             email = request.form.get('email').strip() if request.form.get('email') else ''
             phone = request.form.get('phone').strip() if request.form.get('phone') else ''
+            personal_info=request.form.get("personal_info").strip() if request.form.get('personal_info') else ''
+            # 根据id获取用户
             usr = models.User.query.get(id)
             if usr:
+                # 更改信息
+                usr.name=name
+                usr.nick_name=nick_name
                 usr.email = email
                 usr.phone = phone
+                usr.personal_info=personal_info
                 db.session.commit()
                 return to_dict_msg(200,msg='修改数据成功！')
             else:
@@ -116,10 +125,11 @@ def login():
         return {'status':10000,'msg':'数据不完整'}
     if len(name) >1:
         usr = models.User.query.filter_by(name =name).first()
+        print(usr)
         if usr:
             if usr.check_password(pwd):
                 token = generate_auth_token(usr.id,5)
-                return to_dict_msg(200,data={'token':token})
+                return to_dict_msg(200,data={'token':token,'uid':usr.id})
     return  {'status':10001,'msg':'用户名或密码错误'}
 
 @user.route('/reset',methods=['GET'])
