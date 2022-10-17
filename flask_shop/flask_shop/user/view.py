@@ -1,8 +1,9 @@
 from flask_shop.user import user,user_api
 from flask_shop import models,db
-from flask import request
+from flask import request,current_app
 from flask_restful import Resource,reqparse
 import re
+from flask_shop.utils.md5 import md5_file
 from flask_shop.utils.message import to_dict_msg
 from flask_shop.utils.tokens import generate_auth_token,verify_auth_token,login_required
 @user.route('/')
@@ -10,12 +11,46 @@ def index():
     return "User Hello!!!"
 # 用户接口
 class User(Resource):
+    """用户管理"""
     def get(self):
+        """获取用户信息
+
+        @@@
+        ### description
+        > 获取用户信息
+
+        ### args
+        |  args | nullable | request type | type |  remarks |
+        |-------|----------|--------------|------|----------|
+        |  id   |  false   |    body      | int  | user id  |
+
+        ### request
+        ```json
+        {"id": "xxx"}
+        ```
+
+        ### 用户获取成功返回
+        ```json
+        {"status": 200, "msg": "获取成功", "data": {}}
+        ```
+        ### 找不到用户返回
+        ```json
+        {"status": 200, "msg": "没有此用户"}
+        ```      
+        ### 错误返回
+        ```json
+        {"status": 20000, "msg": "异常错误"}}
+        ```   
+        @@@
+        """
         try:
             id = int(request.args.get('id').strip())
             usr = models.User.query.filter_by(id = id).first()
+            role=models.Role.query.filter_by(id=usr.rid).first()
+            # res=usr.to_dict()
+            # res.role=role
             if usr:
-                return to_dict_msg(200,usr.to_dict(),'获取用户成功！')
+                return to_dict_msg(200,{'user':usr.to_dict(),'role':role.to_dict()},'获取用户成功！')
             else:
                 return to_dict_msg(200,[],'没有此用户！')
         except Exception as e:
@@ -29,7 +64,6 @@ class User(Resource):
         nick_name = request.form.get('nick_name')
         phone = request.form.get('phone')
         email = request.form.get('email')
-
         # 验证数据的正确性
         if not all([name,pwd,real_pwd]):
             return to_dict_msg(10000)
@@ -44,7 +78,7 @@ class User(Resource):
         if not re.match(r'^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$',email):
             return to_dict_msg(10015)
         try:
-            usr = models.User(name = name,password = pwd ,nick_name =nick_name,phone =phone,email = email)
+            usr = models.User(name = name,password = pwd ,nick_name =nick_name,phone =phone,email = email,rid=1)
             db.session.add(usr)
             db.session.commit()
             return {'status':200,'msg':'成功！'} 
@@ -143,6 +177,56 @@ def reset():
         return to_dict_msg(200,msg = '重置密码成功！')
     except Exception as e:
         return to_dict_msg(20000)
+
+# 上传头像接口
+@user.route('/upload_img', methods=['POST'])
+def upload_img():
+    try:
+        # 获取字段
+        img_file = request.files.get('file')
+        # 数据查询
+        if not img_file and not usr:
+            return to_dict_msg(10023)
+        if allowed_img(img_file.filename):
+            # 上传配置
+            floder = current_app.config.get('SERVER_IMG_UPLOADS')
+            # 分割字段
+            end_prefix = img_file.filename.rsplit('.', 1)[1]
+            # 名称加密
+            file_name = md5_file()
+            img_file.save(f'{floder}/{file_name}.{end_prefix}')
+            url=f'http://127.0.0.1:5000/static/img/{file_name}.{end_prefix}'
+            path= f'/static/img/{file_name}.{end_prefix}'
+            data = {
+                'path':path,
+                'url': url
+            }
+            return to_dict_msg(200, data, '上传图片成功！！')
+        else:
+            return to_dict_msg(10024)
+    except Exception as e:
+        print(e)
+        return to_dict_msg(20000)
+    
+def allowed_img(filname):
+    return '.' in filname and filname.rsplit('.', 1)[1] in current_app.config['ALLOWED_IMGS']
+
+@user.route("/avatar_url", methods=["PUT"])
+def avatar_url():
+    try:
+        id=int(request.form.get('id').strip())
+        url=request.form.get('url')
+        usr=models.User.query.get(id)
+        if usr and url:
+            usr.avatar_url=url
+            db.session.commit()
+            return to_dict_msg(200,msg='上传头像成功')
+        else:
+            return to_dict_msg(10022)
+    except Exception as e:
+        print(e)
+        return to_dict_msg(20000)
+
 # 测试用
 @user.route('/test')
 @login_required

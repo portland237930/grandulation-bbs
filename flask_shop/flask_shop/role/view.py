@@ -1,9 +1,9 @@
-from shop.role import role,role_api
-from shop import models,db
+from flask_shop.role import role,role_api
+from flask_shop import models,db
 from flask import request	
 from flask_restful import Resource
 import re
-from shop.utils.message import to_dict_msg
+from flask_shop.utils.message import to_dict_msg
 
 # 角色列表接口
 class Role(Resource):
@@ -83,13 +83,13 @@ def del_menu(rid,mid):
 			if m in r.menus:
 				# 删除指定角色中的指定权限
 				r.menus.remove(m)
-				# 如果删除的是一级菜单
-				if m.level==1:
-					# 获得一级菜单的子菜单
-					for temp_m in m.children:
-						# 删除所有子节点
-						if temp_m in r.menus:
-							r.menus.remove(temp_m)
+				# # 如果删除的是一级菜单
+				# if m.level==1:
+				# 	# 获得一级菜单的子菜单
+				# 	for temp_m in m.children:
+				# 		# 删除所有子节点
+				# 		if temp_m in r.menus:
+				# 			r.menus.remove(temp_m)
 				db.session.commit()
 				return to_dict_msg(200,data=r.get_menu_dict(),msg="删除权限成功")
 			else:
@@ -100,8 +100,9 @@ def del_menu(rid,mid):
 		return to_dict_msg(20000)
 
 # 分配权限接口
-@role.route("/set_menu/<int:rid>/",methods=['POST'])
-def set_menu(rid):
+@role.route("/set_permission/<int:rid>/",methods=['POST'])
+def set_permission(rid):
+	print(1)
 	try:
 		# 获得角色
 		role=models.Role.query.get(rid)
@@ -109,13 +110,13 @@ def set_menu(rid):
 		mids=request.form.get('mids')
 		if role:
 			# 清空角色权限
-			role.menus=[]
+			role.permission=[]
 			for m in mids.split(','):
 				if m:
 					# 获取权限
-					temp_menu=models.Menu.query.get(int(m))
+					temp_menu=models.Permission.query.get(int(m))
 					if temp_menu:
-						role.menus.append(temp_menu)
+						role.permission.append(temp_menu)
 			db.session.commit()
 			return to_dict_msg(200,msg="分配权限成功")
 		return to_dict_msg(10020)
