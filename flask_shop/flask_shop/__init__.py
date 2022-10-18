@@ -17,13 +17,15 @@ def create_app(config_name):
     description="论坛API",
     )
     db.init_app(app)
-
+    # 蓝图注册
     from flask_shop.user import user
     app.register_blueprint(user)
     from flask_shop.role import role
     app.register_blueprint(role)
     from flask_shop.permission import permission
     app.register_blueprint(permission)
+    from flask_shop.article import article
+    app.register_blueprint(article)
     return app
 
 

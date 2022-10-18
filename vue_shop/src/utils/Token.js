@@ -10,3 +10,15 @@ export const getToken = () => {
 export const removeToken = () => {
     localStorage.removeItem("TOKEN");
 }
+// 创建uid
+export const getUid = () => {
+        return localStorage.getItem("uid");
+}
+// 创建uid
+export const setUid = (uid) => {
+        return localStorage.setItem("uid",uid);
+}
+// 移除uid
+export const removeUid = () => {
+    localStorage.removeItem("uid");
+}

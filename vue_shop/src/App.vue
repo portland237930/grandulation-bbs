@@ -1,16 +1,40 @@
 <template>
   <div id="app">
-    <Header v-show="$route.meta.showHeader"/>
-    <router-view/>
+    <el-backtop></el-backtop>
+    <Header id="header"
+            isLogin="isLogin"
+            v-show="$route.meta.showHeader" />
+    <router-view />
   </div>
 </template>
 <script>
 import Header from './components/Header.vue'
+import { getToken } from "./utils/Token"
 export default {
-  components:{
-    Header
-  }
+  data () {
+    return {
+      isLogin: false
+    }
+  },
+  components: {
+    Header,
+  },
+  methods: {
+  },
+  mounted () {
+
+  },
 }
 </script>
 <style>
+#app {
+}
+.login {
+  animation-name: rotateIn;
+  animation-duration: 1s;
+}
+.logout {
+  animation-name: rotateOut;
+  animation-duration: 1s;
+}
 </style>

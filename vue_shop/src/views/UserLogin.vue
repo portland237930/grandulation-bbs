@@ -1,83 +1,92 @@
 <template>
-<div class="container">
-        <div class="login-wrapper">
-            <div class="header">Login</div>
-            <div class="form-wrapper">
-                <el-form :rule="LoginRule" ref="Loginform" :model="userinfo" label-width="80px">
-                    <el-form-item label="账号" prop="name">
-                        <el-input placeholder="请输入用户名" v-model="userinfo.name" type="primary"></el-input>
-                    </el-form-item>
-                    <el-form-item label="密码" prop="pwd">
-                        <el-input type="primary" show-password placeholder="请输入密码" v-model="userinfo.pwd"></el-input>
-                    </el-form-item>
-    
-                </el-form>
-                <el-button @click="UserLogin" type="primary" class="btn">Login</el-button>
-            </div>
-            <div class="msg">
-                No account yet
-                <router-link to="/userregister">Register</router-link>
-            </div>
-            </div>
-
-        </div>
+  <div class="container">
+    <div class="login-wrapper">
+      <div class="header">Login</div>
+      <div class="form-wrapper">
+        <el-form :rule="LoginRule"
+                 ref="Loginform"
+                 :model="userinfo"
+                 label-width="80px">
+          <el-form-item label="账号"
+                        prop="name">
+            <el-input placeholder="请输入用户名"
+                      v-model="userinfo.name"
+                      type="primary"></el-input>
+          </el-form-item>
+          <el-form-item label="密码"
+                        prop="pwd">
+            <el-input type="primary"
+                      show-password
+                      placeholder="请输入密码"
+                      v-model="userinfo.pwd"></el-input>
+          </el-form-item>
+        </el-form>
+        <el-button @click="UserLogin"
+                   type="primary"
+                   class="btn">Login</el-button>
+      </div>
+      <div class="msg">
+        No account yet
+        <router-link to="/userregister">Register</router-link>
+      </div>
     </div>
+
+  </div>
+  </div>
 </template>
 
 <script>
 // 引用用户样式
 import "../assets/css/user.css"
 // 引入token
-import {setToken} from "../utils/Token"
+import { setToken, setUid } from "../utils/Token"
 export default {
-	name: 'UserLogin',
+  name: 'UserLogin',
 
-	data() {
-		return {
-			userinfo:{
-                name:"",
-                pwd:""
-            },
-            LoginRule:{
-                name: [
-            { required: true, message: "请输入用户名", trigger: "blur" },
-            { min: 2, max: 10, message: "长度在 2~10 字符之间", trigger: "blur" },
-            ],
-            pwd: [
+  data () {
+    return {
+      userinfo: {
+        name: "",
+        pwd: ""
+      },
+      LoginRule: {
+        name: [
+          { required: true, message: "请输入用户名", trigger: "blur" },
+          { min: 2, max: 10, message: "长度在 2~10 字符之间", trigger: "blur" },
+        ],
+        pwd: [
           { required: true, message: "请输入密码", trigger: "blur" },
           { min: 2, max: 15, message: "长度在 2~15 字符之间", trigger: "blur" },
         ],
-            }
-		};
-	},
+      }
+    };
+  },
 
-	mounted() {
-		
-	},
+  mounted () {
+  },
 
-	methods: {
-		UserLogin(){
-            this.$refs.Loginform.validate(async valid=>{
-                if(!valid) return
-                let res=await this.$axios.post(
-                    '/user/login',
-                    this.$qs.stringify(this.userinfo)
-                )
-                console.log(res);
-                if(res.data.status!=200) return this.$message.error(res.data.msg)
-                    // 全局存储
-                console.log('uid',res.data.data.uid);            
-                // 设置Token
-                setToken(res.data.data.token)
-                localStorage.setItem('uid',res.data.data.uid)
-                this.$message.success(res.data.msg)
-                this.$router.push("/home")                    
-            })
-        }
-	},
+  methods: {
+    UserLogin () {
+      this.$refs.Loginform.validate(async valid => {
+        if (!valid) return
+        let res = await this.$axios.post(
+          '/user/login',
+          this.$qs.stringify(this.userinfo)
+        )
+        console.log(res);
+        if (res.data.status != 200) return this.$message.error(res.data.msg)
+        // 全局存储
+        console.log('uid', res.data.data.uid);
+        // 设置Token
+        setToken(res.data.data.token)
+        setUid(res.data.data.uid)
+        this.$message.success(res.data.msg)
+        this.$router.push("/home")
+      })
+    }
+  },
 };
 </script>
 
 <style scoped>
-
 </style>

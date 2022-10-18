@@ -34,10 +34,10 @@ const router = new VueRouter({
 })
 // 前置路由自动登录
 router.beforeEach((to, from, next) => {
-  const tokenStr = getToken('TOKEN')
-  console.log(tokenStr);
-//   if (!tokenStr) return next('/userlogin')
-  if (to.path === '/userlogin'&&tokenStr){
+  let tokenStr = getToken('TOKEN')
+//   if (!tokenStr) next('/userlogin')
+// 自动登录
+  if (to.path == '/userlogin'&&tokenStr){
       return next('/home')
   }
   next()

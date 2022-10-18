@@ -83,15 +83,20 @@ class Article(db.Model,BaseModel):
     title=db.Column(db.String(255),nullable=False) # 文章标题
     viewed=db.Column(db.Integer,default=0) # 浏览次数
     thumb=db.Column(db.Integer,default=0) # 点赞数量
-    content=db.Column(db.String(2000)) # 文章内容 
+    content=db.Column(db.String(20000)) # 文章内容 
+    cover=db.Column(db.String(255)) # 文章封面
     pid=db.Column(db.Integer,db.ForeignKey('t_user.id'))
     cid=db.relationship("Comment",backref="article")
     def to_dict(self):
         return {
+            'id':self.id if self.id else 0,
             'title':self.title if self.title else '',
-            'viewed':self.viewed if self.viewed else '',
-            'thumb':self.thumb if self.thumb else '',
-            'content':self.thumb if self.thumb else ''
+            'viewed':self.viewed if self.viewed else 0,
+            'thumb':self.thumb if self.thumb else 0,
+            'content':self.content if self.content else 0,
+            'cover':self.cover if self.cover else '',
+            'create_time':str(self.create_time) if self.create_time else '',
+            'update_time':str(self.update_time) if self.update_time else ''
         }
 
 # 评论表
