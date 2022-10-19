@@ -1,7 +1,7 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
 import HomeView from '../views/HomeView.vue'
-import {getToken} from "../utils/Token"
+import { getToken } from "../utils/Token"
 Vue.use(VueRouter)
 import routes from "./route.js"
 // 重写push|replace方法,使编程式导航不会报错
@@ -26,21 +26,21 @@ VueRouter.prototype.replace = function(location, resolve, reject) {
 }
 
 const router = new VueRouter({
-    routes,
-    scrollBehavior(to, from, savedPosition) {
-        // 始终滚动到顶部
-        return { y: 0 }
-    },
-})
-// 前置路由自动登录
-router.beforeEach((to, from, next) => {
-  let tokenStr = getToken('TOKEN')
-//   if (!tokenStr) next('/userlogin')
-// 自动登录
-  if (to.path == '/userlogin'&&tokenStr){
-      return next('/home')
-  }
-  next()
+        routes,
+        scrollBehavior(to, from, savedPosition) {
+            // 始终滚动到顶部
+            return { y: 0 }
+        },
+    })
+    // 前置路由自动登录
+router.beforeEach(async(to, from, next) => {
+    let tokenStr = getToken('TOKEN')
+    if (!tokenStr && to.name != 'userlogin') next('/userlogin')
+        // 自动登录
+    if (to.path == '/userlogin' && tokenStr) {
+        return next('/home')
+    }
+    next()
 })
 
 export default router

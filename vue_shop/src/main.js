@@ -37,7 +37,9 @@ Vue.use(ElementUI);
 // 引入animation
 import animated from "animate.css";
 Vue.use(animated);
-// 初始化程序
+import VueParticles from 'vue-particles'
+Vue.use(VueParticles)
+    // 初始化程序
 new Vue({
     router,
     render: (h) => h(App),

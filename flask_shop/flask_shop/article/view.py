@@ -99,7 +99,7 @@ class Article(Resource):
 		except Exception as e:
 			print(e)
 			return to_dict_msg(20000)
-# 点赞数增加接口
+# 点赞数和评论数增加接口
 @article.route("/addart",methods=["POST"])
 def addthumb():
 		try:
@@ -110,11 +110,14 @@ def addthumb():
 			art=models.Article.query.get(aid)
 			type=request.args.get('type').strip() if request.args.get('type') else ''
 			if usr and art:
-
-				if type=='thumb':
+				if type=='thumb_add':
 					art.thumb+=1
-				elif type=='viewed':
+				elif type=='viewed_add':
 					art.viewed+=1
+				elif type=='thumb_reduce':
+					art.thumb-=1 if art.thumb else 0
+				elif type=='viewed_reduce':
+					art.viewed-=1 if art.viewed else 0
 				else:
 					return to_dict_msg(10028)
 				db.session.commit()

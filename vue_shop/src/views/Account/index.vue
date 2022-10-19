@@ -34,7 +34,7 @@ export default {
   },
 
   mounted () {
-		// 每次进入后回到个人设置页
+    // 每次进入后回到个人设置页
     this.handleSelect(this.activeIndex);
   },
   created () {
@@ -65,7 +65,6 @@ export default {
 .content {
   position: relative;
   width: 100%;
-  height: 100%;
 }
 .box-menu {
   position: absolute;

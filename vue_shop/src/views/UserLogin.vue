@@ -23,6 +23,7 @@
         </el-form>
         <el-button @click="UserLogin"
                    type="primary"
+                   :loading="isloading"
                    class="btn">Login</el-button>
       </div>
       <div class="msg">
@@ -30,8 +31,6 @@
         <router-link to="/userregister">Register</router-link>
       </div>
     </div>
-
-  </div>
   </div>
 </template>
 
@@ -58,7 +57,8 @@ export default {
           { required: true, message: "请输入密码", trigger: "blur" },
           { min: 2, max: 15, message: "长度在 2~15 字符之间", trigger: "blur" },
         ],
-      }
+      },
+      isloading: false
     };
   },
 
@@ -69,6 +69,7 @@ export default {
     UserLogin () {
       this.$refs.Loginform.validate(async valid => {
         if (!valid) return
+        this.isloading = true
         let res = await this.$axios.post(
           '/user/login',
           this.$qs.stringify(this.userinfo)
@@ -80,6 +81,7 @@ export default {
         // 设置Token
         setToken(res.data.data.token)
         setUid(res.data.data.uid)
+        this.isloading = false
         this.$message.success(res.data.msg)
         this.$router.push("/home")
       })
@@ -89,4 +91,7 @@ export default {
 </script>
 
 <style scoped>
+.container {
+  animation: zoomIn 0.5s ease; /* referring directly to the animation's @keyframe declaration */
+}
 </style>

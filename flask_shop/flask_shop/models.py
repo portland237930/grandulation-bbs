@@ -104,12 +104,13 @@ class Comment(db.Model,BaseModel):
     __tablename__ = 'comments'
     id=db.Column(db.Integer,primary_key=True)
     content=db.Column(db.String(255))
-    viewed=db.Column(db.Integer,default=0)
     thumb=db.Column(db.Integer,default=0)
     aid=db.Column(db.Integer,db.ForeignKey("t_article.id"))
     def to_dict(self):
         return {
+            'id':int(self.id) if self.id else 0,
+            'create_time':str(self.create_time) if self.create_time else '',
+            'update_time':str(self.update_time) if self.update_time else '',
             'content': self.content if self.content else '',
-            'viewed':self.viewed if self.viewed else '',
-            'thumb':self.thumb if self.thumb else ''
+            'thumb':self.thumb if self.thumb else 0
         }

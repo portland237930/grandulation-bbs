@@ -26,6 +26,8 @@ def create_app(config_name):
     app.register_blueprint(permission)
     from flask_shop.article import article
     app.register_blueprint(article)
+    from flask_shop.comments import comments
+    app.register_blueprint(comments)
     return app
 
 

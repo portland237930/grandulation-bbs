@@ -7,20 +7,19 @@
              background-color="#545c64"
              text-color="#fff"
              active-text-color="#ffd04b">
-
       <el-menu-item index="1">首页</el-menu-item>
       <el-menu-item index="2">社区</el-menu-item>
-      <el-menu-item index=3
-                    v-show="!isLogin">登录/注册</el-menu-item>
-      <el-submenu index="4"
-                  v-show="isLogin">
+      <el-menu-item index="3">使用手册</el-menu-item>
+      <el-menu-item index="4">购买</el-menu-item>
+      <el-submenu index="5">
         <template slot="title">我的
         </template>
-        <el-menu-item index="2-1">个人设置</el-menu-item>
-        <el-menu-item index="2-2">我的帖子</el-menu-item>
-        <el-menu-item index="2-4">退出登录</el-menu-item>
+        <el-menu-item index="6-1">个人设置</el-menu-item>
+        <el-menu-item index="6-2">我的帖子</el-menu-item>
+        <el-menu-item index="6-3">退出登录</el-menu-item>
       </el-submenu>
-      <el-menu-item index="5">发布帖子</el-menu-item>
+      <el-menu-item style="float:right;"
+                    index="7">发布帖子</el-menu-item>
     </el-menu>
   </div>
 </template>
@@ -32,7 +31,6 @@ export default {
   data () {
     return {
       activeIndex: '1',
-      isLogin: false
     };
   },
   computed: {
@@ -50,25 +48,24 @@ export default {
         case '2':
           address = '/recommended'
           break;
-        case '2-1':
+        case '6-1':
           address = '/account'
           break;
-        case '2-2':
+        case '6-2':
           address = '/account/ownerarticle'
           break
-        case '2-4':
+        case '6-3':
           // 删除Token
           removeToken()
           // 删除Uid
           removeUid()
-          this.isLogin = false
           // 返回登录界面
           address = '/userlogin'
           break;
-        case '3':
+        case '5':
           address = '/userlogin'
           break;
-        case '5':
+        case '7':
           address = '/publishArt'
           this.activeIndex = '1'
         default:
@@ -81,7 +78,6 @@ export default {
 
   },
   mounted () {
-    this.isLogin = getToken() ? true : false
     this.handleSelect()
   },
   activated () {
