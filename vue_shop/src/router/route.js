@@ -1,15 +1,15 @@
 export default [{
         path: "/",
-        redirect: "/userlogin"
+        redirect: "/userlogin",
     },
     {
-        path: '/home',
-        name: 'home',
+        path: "/home",
+        name: "home",
         meta: {
-            showHeader: true
+            showHeader: true,
         },
         component: () =>
-            import ("@/views/HomeView")
+            import ("@/views/HomeView"),
     },
     {
         path: "/userlogin",
@@ -17,8 +17,8 @@ export default [{
         component: () =>
             import ("@/views/UserLogin"),
         meta: {
-            showHeader: false
-        }
+            showHeader: false,
+        },
     },
     {
         path: "/userregister",
@@ -26,8 +26,26 @@ export default [{
         component: () =>
             import ("@/views/UserRegister"),
         meta: {
-            showHeader: false
-        }
+            showHeader: false,
+        },
+    },
+    {
+        path: "/discuss",
+        name: "/discuss",
+        component: () =>
+            import ("@/views/Discuss"),
+        meta: {
+            showHeader: true,
+        },
+    },
+    {
+        path: "/search",
+        name: "search",
+        component: () =>
+            import ("@/views/Search"),
+        meta: {
+            showHeader: true,
+        },
     },
     {
         path: "/account",
@@ -35,14 +53,14 @@ export default [{
         component: () =>
             import ("@/views/Account"),
         meta: {
-            showHeader: true
+            showHeader: true,
         },
         children: [{
                 path: "personal",
                 component: () =>
                     import ("@/views/Account/Personal.vue"),
                 meta: {
-                    showHeader: true
+                    showHeader: true,
                 },
             },
             {
@@ -51,23 +69,32 @@ export default [{
                 component: () =>
                     import ("@/views/Account/OwnerArticle"),
                 meta: {
-                    showHeader: true
+                    showHeader: true,
                 },
             },
             {
                 path: "/account",
-                redirect: "/account/personal"
-            }
-        ]
+                redirect: "/account/personal",
+            },
+            {
+                path: "ownercomments",
+                name: "ownercomments",
+                component: () =>
+                    import ("@/views/Account/OwnerComments"),
+                meta: {
+                    showHeader: true,
+                },
+            },
+        ],
     },
     {
         path: "/publishart",
-        name: 'publishart',
+        name: "publishart",
         component: () =>
             import ("@/views/PublishArt"),
         meta: {
-            showHeader: false
-        }
+            showHeader: false,
+        },
     },
     {
         path: "/viewarticle",
@@ -75,13 +102,13 @@ export default [{
         component: () =>
             import ("@/views/Articles/ViewArticle"),
         meta: {
-            showHeader: true
-        }
+            showHeader: true,
+        },
     },
     {
-        path:"/editarticle",
-        name:"editarticle",
-        component:()=>
-            import ("@/views/Articles/EditArticle")
-    }
-]
+        path: "/editarticle",
+        name: "editarticle",
+        component: () =>
+            import ("@/views/Articles/EditArticle"),
+    },
+];

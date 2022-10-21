@@ -125,6 +125,36 @@ def addthumb():
 		except Exception as e:
 			print(e)
 			return to_dict_msg(20000)
+# 获取所有文章
+@article.route("/getAllArticle",methods=['GET'])
+def getAllArticle():
+	try:
+		type=request.args.get('type').strip() if request.args.get('type') else ''
+		if type=='all':
+			art=models.Article.query.all()
+			alist=[a.to_dict() for a in art]
+		elif type=='reo':
+			art=models.Article.query.paginate(1,12)
+			alist=[a.to_dict() for a in art.items]
+		return to_dict_msg(200,data=alist,msg="获取成功")
+	except Exception as e:
+		print(e)
+		return to_dict_msg(20000)
 
+# 根据标题模糊查询
+@article.route('/search',methods=['GET'])
+def search():
+	try:
+		title=request.form.get('title')
+		articles=models.Article.query.filter(
+			models.Article.title.like("%"+title+"%") if title else ''
+			).all()
+			# 如果查询成功
+		if articles:
+			alist=[a.to_dict() for a in articles]
+			return to_dict_msg(200,data=alist,msg="查询成功")
+	except Exception as e:
+		print(e)
+		return to_dict_msg(20000)
 
 article_api.add_resource(Article,'/article')

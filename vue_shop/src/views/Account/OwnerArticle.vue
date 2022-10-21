@@ -111,11 +111,12 @@ export default {
     this.getArticleList()
   },
   methods: {
+    // 获取文章列表
     async getArticleList () {
       var uid = getUid()
       var type = "list"
       let { pnum, psize } = this
-      let { data: res1 } = await this.$axios.get(
+      let { data: res } = await this.$axios.get(
         "/article",
         {
           params: {
@@ -124,25 +125,25 @@ export default {
           }
         }
       )
-      let { data: res2 } = await this.$axios.get(
-        '/user/user',
-        {
-          params: {
-            'id': uid
-          }
-        }
-      )
-      console.log('user', res1);
+      // let { data: res2 } = await this.$axios.get(
+      //   '/user/user',
+      //   {
+      //     params: {
+      //       'id': uid
+      //     }
+      //   }
+      // )
+      console.log('user', res);
       // 请求成功
-      if (res1 && res2) {
+      if (res.status==200) {
         // 收集参数
-        this.articleList = res1.data
-        this.userlist = res2.data.user
-        this.rolelist = res2.data.role
+        this.articleList = res.data
+        this.userlist = res.data[0].user
+        this.rolelist = res.data[0].user.role
         // 分页处理
-        this.total = res1.data.length - 1
+        this.total = res.data.length - 1
         let cnum = (this.pnum - 1) * this.viewlist.length
-        this.viewlist = res1.data.slice(cnum, psize + cnum)
+        this.viewlist = res.data.slice(cnum, psize + cnum)
       }
       console.log(this.total);
     },
@@ -260,6 +261,8 @@ export default {
 .article {
   margin: 10px 10px;
   width: 100%;
+  animation-name: fadeIn; /*fadeInLeft为要使用的动画效果名，在这里不需要加animate前缀*/
+  animation-duration: 2s; /*这里设定完成该动画的时间*/
 }
 .article h3 {
   width: 100%;

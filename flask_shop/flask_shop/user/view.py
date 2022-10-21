@@ -46,11 +46,10 @@ class User(Resource):
         try:
             id = int(request.args.get('id').strip())
             usr = models.User.query.filter_by(id = id).first()
-            role=models.Role.query.filter_by(id=usr.rid).first()
             # res=usr.to_dict()
             # res.role=role
             if usr:
-                return to_dict_msg(200,{'user':usr.to_dict(),'role':role.to_dict()},'获取用户成功！')
+                return to_dict_msg(200,usr.to_dict(),'获取用户成功！')
             else:
                 return to_dict_msg(200,[],'没有此用户！')
         except Exception as e:

@@ -32,10 +32,18 @@ export default {
       activeIndex: '1'
     };
   },
-
+  watch: {
+    $route (to, from) {
+      if (to.path == '/account/ownerarticle') this.activeIndex = '2'
+      if (to.path == '/account/personal') this.activeIndex = '1'
+      if (to.path == '/account/ownercomments') this.activeIndex = '3'
+      console.log(to.path);
+      this.handleSelect(this.activeIndex)
+    }
+  },
   mounted () {
     // 每次进入后回到个人设置页
-    this.handleSelect(this.activeIndex);
+    // this.handleSelect(this.activeIndex);
   },
   created () {
 
@@ -44,13 +52,16 @@ export default {
     // 根据导航更改子路由
     handleSelect (key) {
       this.activeIndex = key
-      // console.log(key);
+      console.log(key);
       switch (key) {
         case '1':
           this.$router.push('/account/personal')
           break;
         case '2':
           this.$router.push('/account/ownerarticle')
+          break;
+        case '3':
+          this.$router.push("/account/ownercomments")
           break;
         default:
           break;

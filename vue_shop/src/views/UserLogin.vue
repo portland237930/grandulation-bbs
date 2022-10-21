@@ -26,6 +26,12 @@
                    :loading="isloading"
                    class="btn">Login</el-button>
       </div>
+      <!-- <wxlogin href='data:text/css;base64,LmltcG93ZXJCb3ggLnFyY29kZSB7CiAgICB3aWR0aDogMTUwcHg7Cn0KLmltcG93ZXJCb3ggLnRpdGxlIHsKICAgIHRleHQtYWxpZ246IGxlZnQ7CiAgICBmb250LXNpemU6IDE2cHg7CiAgICBmb250LXdlaWdodDogYm9sZDsKfQ=='
+               id="wxcode"
+               theme=''
+               appid="wxd4ac0386fed8e63b"
+               scope="snsapi_login"
+               :redirect_uri="encodeURIComponent(redirect_uri)"></wxlogin> -->
       <div class="msg">
         No account yet
         <router-link to="/userregister">Register</router-link>
@@ -39,6 +45,8 @@
 import "../assets/css/user.css"
 // 引入token
 import { setToken, setUid } from "../utils/Token"
+import wxlogin from 'vue-wxlogin';
+
 export default {
   name: 'UserLogin',
 
@@ -58,10 +66,13 @@ export default {
           { min: 2, max: 15, message: "长度在 2~15 字符之间", trigger: "blur" },
         ],
       },
-      isloading: false
+      isloading: false,
+      redirect_uri: "http://localhost:8080/home"
     };
   },
-
+  components: {
+    wxlogin
+  },
   mounted () {
   },
 
@@ -92,6 +103,7 @@ export default {
 
 <style scoped>
 .container {
-  animation: zoomIn 0.5s ease; /* referring directly to the animation's @keyframe declaration */
+  animation: zoomIn 0.5s ease;
 }
+
 </style>

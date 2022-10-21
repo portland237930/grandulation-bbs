@@ -1,6 +1,6 @@
 <template>
-  <div>
-    <el-card class="content">
+  <div class="content">
+    <el-card style="width:100%">
       <h1>{{article.title}}</h1>
       <div class="personal-content">
         <img src="@/assets/bluetoothe.png">
@@ -26,10 +26,39 @@
                :src="i"
                v-show="i">
         </div>
-
         <span v-html="article.content"></span>
       </div>
     </el-card>
+    <div v-if="commentlist"
+         style="width:100%;">
+      <el-card class="
+         comment">
+        <div slot="header">
+          <h2 style="display:inline-block;">全部评论</h2>
+          <span v-if="article.commentlist"
+                style="display:inline-block;margin-left:5px;">{{article.commentlist.length}}</span>
+          <span style="display:inline-block;margin-left:5px;"
+                v-else>0</span>
+        </div>
+        <el-card class="viewlist"
+                 v-for="c in commentlist"
+                 :key="c.id"
+                 shadow="hover">
+          <span class="comment-owner">{{c.owner}}:</span>
+          <p class="comment-content">{{c.content}}</p>
+        </el-card>
+        <el-pagination small
+                       v-if="commentlist"
+                       :pageNo="pnum"
+                       :page-size="psize"
+                       @current-change="pageChange"
+                       layout="prev, pager, next"
+                       :total="total"
+                       class="pagination">
+        </el-pagination>
+      </el-card>
+    </div>
+
   </div>
 </template>
 
@@ -40,27 +69,51 @@ export default {
   data () {
     return {
       article: {},
+      commentlist: [],
       user: {},
       role: {},
-      imgUrl: []
+      imgUrl: [],
+      pnum: 1,
+      psize: 4,
+      total: 0
     };
   },
 
   mounted () {
+
+
+  },
+  created () {
     // 获取路由参数并收集参数
     let res = this.$qs.parse(this.$route.query.datas);
     this.article = res.article;
     this.user = res.user
     this.role = res.role
+    console.log(res.article.commentlist);
+    // 封面图片处理
     if (res.article.cover) {
       this.imgUrl = this.article.cover.split(',')
     }
+    // 分页处理
+    if (res.article.commentlist != undefined) {
+      this.commentlist = res.article.commentlist
+      let cnum = (this.pnum - 1) * this.commentlist.length
+      this.commentlist = this.article.commentlist.slice(cnum, cnum + this.psize)
+      this.total = this.article.commentlist.length
+    } else {
+      this.commentlist = []
+    }
+
     console.log(this.imgUrl);
-
   },
-
   methods: {
-
+    // 分页处理
+    pageChange (data) {
+      this.pnum = data
+      console.log(this.pnum);
+      let cnum = (this.pnum - 1) * this.commentlist.length
+      this.commentlist = this.article.commentlist.slice(cnum, cnum + this.psize)
+    }
   },
 };
 </script>
@@ -70,6 +123,7 @@ export default {
   width: 75%;
   margin: 10px auto;
   display: flex;
+  flex-wrap: wrap;
   flex-direction: row;
 }
 .content >>> .el-card__body {
@@ -120,5 +174,32 @@ export default {
 .img-containter img {
   width: 80%;
   margin: 0 auto;
+}
+.comment {
+  width: 100%;
+  float: left;
+  margin: 30px 0px;
+}
+.viewlist {
+  width: 90%;
+  animation-name: fadeIn; /*fadeInLeft为要使用的动画效果名，在这里不需要加animate前缀*/
+  animation-duration: 1s; /*这里设定完成该动画的时间*/
+  margin-bottom: 15px;
+  float: left;
+}
+.comment-owner {
+  font-size: 18px;
+  display: inline-block;
+  width: 100%;
+  font-weight: bold;
+}
+.comment-content {
+  font-size: 13px;
+  overflow: hidden;
+  width: 100%;
+}
+.pagination {
+  width: 100%;
+  float: left;
 }
 </style>

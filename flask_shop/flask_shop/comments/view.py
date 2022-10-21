@@ -17,7 +17,9 @@ class Comments(Resource):
 			comment=models.Comment.query.get(cid)
 			# 查询成功
 			if art and comment:
-				return to_dict_msg(200,data=comment.to_dict(),msg="获取评论成功")
+				usr=models.User.query.get(art.pid)
+				if usr:
+					return to_dict_msg(200,data={'comments':comment.to_dict(),'user':usr.to_dict()},msg="获取评论成功")
 			else:
 				return to_dict_msg(10030)
 		except Exception as e:
@@ -29,10 +31,12 @@ class Comments(Resource):
 			# 收集参数
 			aid=int(request.args.get('aid').strip()) if request.args.get('aid') else 0
 			content=request.form.get("content").strip() if request.form.get("content") else ''
-			art=models.Article.query.filter_by(id=aid)
+			art=models.Article.query.filter_by(id=aid).first()
+			uid=art.pid if art.pid else 0
 			# 如果参数收集成功
-			if art and content:
-				comment=models.Comment(content=content,aid=aid)
+			if art and uid and content:
+				# 创建评论
+				comment=models.Comment(content=content,aid=aid,uid=uid)
 				db.session.add(comment)
 				db.session.commit()
 				return to_dict_msg(200,msg="评论成功")
@@ -55,16 +59,42 @@ class Comments(Resource):
 			print(e)
 			return to_dict_msg(20000)
 
-# 获取所有接口
+# 获取指定用户指定文章的所有评论
 @comments.route('/GetAllComments',methods=["GET"])
 def getcomments():
 	try:
-		id=int(request.args.get("id").strip()) if request.args.get("id") else 0
-		art=models.Article.query.get(id)
-		if art:
-			comments=models.Comment.query.filter_by(aid=id).all()
-			clist=[c.to_dict() for c in comments]
-			return to_dict_msg(200,data=clist,msg="获取所有评论成功")
+		# # 如果获取指定用户的指定文章的所有评论
+		# if type=='all':
+		# 	uid=int(request.args.get("uid").strip()) if request.args.get("uid") else 0
+		# 	aid=int(request.args.get("aid").strip()) if request.args.get("aid") else 0
+		# 	art=models.Article.query.get(aid)
+		# 	usr=models.User.query.get(uid)
+		# 	comments=models.Comment.query.filter_by(aid=aid,uid=uid).all()
+		# 	clist=[c.to_dict() for c in comments]
+		# 	return to_dict_msg(200,data=clist,msg="获取用户{0}的文章{1}所有评论成功".format(usr.name,art.title))
+		# 如果指定用户的所有评论
+		uid=int(request.args.get("uid").strip()) if request.args.get("uid") else 0
+		usr=models.User.query.get(uid)
+		if usr:
+			comments=models.Comment.query.filter_by(uid=uid).all()
+			clist=[]
+			for c in comments:
+				art=models.Article.query.get(c.aid)
+				clist.append(
+					{
+						'comment':c.to_dict(),
+						'publisher':art.title
+					}
+				)
+			# 如果用户存在				
+			return to_dict_msg(200,data=clist,msg="获取用户{0}所有评论成功".format(usr.name))
+			# # 如果指定文章的所有评论
+			# elif type=='article':
+			# 	aid=int(request.args.get("aid").strip()) if request.args.get("aid") else 0
+			# 	art=models.Article.query.get(aid)
+			# 	comments=models.Comment.query.filter_by(aid=aid)
+			# 	clist=[c.to_dict() for c in comments]
+			# 	return to_dict_msg(200,data=clist,msg="获取文章{0}所有评论成功".format(art.title))
 		else:
 			return to_dict_msg(10026)
 	except Exception as e:

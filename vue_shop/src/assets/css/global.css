@@ -10,8 +10,12 @@ body,
 
 #particles-js {
     width: 100%;
-    height: calc(100%-10px);
-    position: absolute;
+    min-height: 100vh;
+    /* overflow: hidden; */
+    z-index: -1;
+    background-size: 100% 100%;
+    position: fixed;
+    /* background: #f4f4f4; */
 }
 
 .el-input {

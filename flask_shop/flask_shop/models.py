@@ -26,7 +26,8 @@ class User(db.Model, BaseModel):
     avatar_url=db.Column(db.String(255),default='') # 头像路径
     personal_info=db.Column(db.String(255)) #用户简介 
     rid=db.Column(db.Integer,db.ForeignKey('t_role.id')) # 角色id
-    aid=db.relationship("Article",backref="user")
+    aid=db.relationship("Article",backref="user") # 一对多
+    cid=db.relationship("Comment",backref="cuser") # 一对多
     @property
     def password(self):
         return self.pwd
@@ -48,6 +49,7 @@ class User(db.Model, BaseModel):
             # 'roles':self.rid if self.rid else '',
             'personal_info':self.personal_info if self.personal_info else '',
             'avatar_url':self.avatar_url if self.avatar_url else '',
+            'role':Role.query.get(self.rid).to_dict() if self.rid else {}
         }
 
 # 角色表
@@ -64,7 +66,8 @@ class Role(db.Model,BaseModel):
 			'id':self.id,
 			'name':self.name,
 			'desc':self.desc,
-		}
+            'permission':[p.to_dict() for p in self.permission]
+            }
 # 用户权限表
 class Permission(db.Model,BaseModel):
 	__tablename__ = 't_permission'
@@ -96,7 +99,9 @@ class Article(db.Model,BaseModel):
             'content':self.content if self.content else 0,
             'cover':self.cover if self.cover else '',
             'create_time':str(self.create_time) if self.create_time else '',
-            'update_time':str(self.update_time) if self.update_time else ''
+            'update_time':str(self.update_time) if self.update_time else '',
+            'commentlist':[c.to_dict() for c in self.cid] if self.cid else [],
+            'user':User.query.get(self.pid).to_dict() if self.pid else {}
         }
 
 # 评论表
@@ -106,9 +111,11 @@ class Comment(db.Model,BaseModel):
     content=db.Column(db.String(255))
     thumb=db.Column(db.Integer,default=0)
     aid=db.Column(db.Integer,db.ForeignKey("t_article.id"))
+    uid=db.Column(db.Integer,db.ForeignKey("t_user.id"))
     def to_dict(self):
         return {
             'id':int(self.id) if self.id else 0,
+            'owner':User.query.get(self.uid).name if User.query.get(self.uid) else '',
             'create_time':str(self.create_time) if self.create_time else '',
             'update_time':str(self.update_time) if self.update_time else '',
             'content': self.content if self.content else '',

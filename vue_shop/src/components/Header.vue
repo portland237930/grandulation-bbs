@@ -4,22 +4,26 @@
              class="el-menu-demo"
              mode="horizontal"
              @select="handleSelect"
-             background-color="#545c64"
-             text-color="#fff"
-             active-text-color="#ffd04b">
-      <el-menu-item index="1">首页</el-menu-item>
-      <el-menu-item index="2">社区</el-menu-item>
-      <el-menu-item index="3">使用手册</el-menu-item>
-      <el-menu-item index="4">购买</el-menu-item>
-      <el-submenu index="5">
+             background-color="#ffffff"
+             text-color="#2f3542"
+             active-text-color="#1e90ff">
+      <el-menu-item index="1">社区</el-menu-item>
+      <el-menu-item index="2">学习</el-menu-item>
+      <el-menu-item index="3">等你来问</el-menu-item>
+      <el-submenu index="4">
         <template slot="title">我的
         </template>
-        <el-menu-item index="6-1">个人设置</el-menu-item>
-        <el-menu-item index="6-2">我的帖子</el-menu-item>
-        <el-menu-item index="6-3">退出登录</el-menu-item>
+        <el-menu-item index="4-1">个人设置</el-menu-item>
+        <el-menu-item index="4-2">我的帖子</el-menu-item>
+        <el-menu-item index="4-3">退出登录</el-menu-item>
       </el-submenu>
-      <el-menu-item style="float:right;"
-                    index="7">发布帖子</el-menu-item>
+      <div class="input-content">
+        <el-input v-model="searchContent"
+                  placeholder="请输入关键字"></el-input>
+        <el-button slot="append"
+                   class="btn"
+                   icon="el-icon-search"></el-button>
+      </div>
     </el-menu>
   </div>
 </template>
@@ -31,7 +35,18 @@ export default {
   data () {
     return {
       activeIndex: '1',
+      searchContent: ""
     };
+  },
+  watch: {
+    // $route(to,from){
+    //   switch (to) {
+    //     case "/home":
+    //       this.activeIndex = '1';
+    //       break;
+    //     case ""
+    //   }
+    // }
   },
   computed: {
   },
@@ -43,13 +58,14 @@ export default {
       // 根据索引进入页面
       switch (key) {
         case "1":
-          address = '/home'
+          address = '/discuss'
           break;
         case '2':
-          address = '/recommended'
+          address = '/discuss'
           break;
-        case '6-1':
-          address = '/account'
+        case '3':
+          address = '/publishArt'
+          this.activeIndex = '1'
           break;
         case '6-2':
           address = '/account/ownerarticle'
@@ -78,7 +94,7 @@ export default {
 
   },
   mounted () {
-    this.handleSelect()
+    // this.handleSelect()
   },
   activated () {
 
@@ -86,5 +102,25 @@ export default {
 };
 </script>
 
-<style lang="scss" scoped>
+<style scoped>
+.el-menu-demo {
+  width: 100%;
+  margin: 0 auto;
+}
+.el-menu-demo .el-menu-item:first-child {
+  margin-left: 220px;
+}
+.input-content {
+  float: right;
+  display: flex;
+  height: 61px;
+  margin-right: 300px;
+  line-height: 61px;
+}
+.el-button {
+  border: none;
+}
+.el-button:hover {
+  background-color: #fff;
+}
 </style>
