@@ -75,16 +75,6 @@
 
         <!--第三部分-->
         <div class="main-right-bottom">
-          <!-- <div class="main-right-bottom-head">
-            <!-- <el-autocomplete v-model="state"
-                             :fetch-suggestions="querySearchAsync"
-                             placeholder="请输入标题"
-                             @select="handleSelect"></el-autocomplete>
-            <el-button type="primary"
-                       @click="GoSearch"
-                       icon="el-icon-search"
-                       circle></el-button> -->
-          <!-- </div> -->
           <ul>
             <li>
               <div>
@@ -213,35 +203,6 @@ export default {
         this.restaurants = res.data
       this.articleList = res.data.slice(this.pnum, this.psize)
     },
-    // 异步搜索
-    querySearchAsync (queryString, cb) {
-      var that = this
-      var restaurants = this.restaurants;
-      var results = queryString ? restaurants.filter(this.createStateFilter(queryString)) : restaurants;
-      var reslist = []
-      // this.searchlist = results
-      console.log(results);
-      // 每隔一段时间进行搜索
-      clearTimeout(this.timeout);
-      this.timeout = setTimeout(() => {
-        results.forEach(item => {
-          that.searchlist.unshift(item)
-          reslist.unshift({
-            'value': item.title
-          })
-        })
-        cb(reslist)
-      }, 1000 * Math.random());
-    },
-    // 闭包查找相关信息
-    createStateFilter (queryString) {
-      return (state) => {
-        return (state.title.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
-      };
-    },
-    handleSelect (item) {
-      console.log('select', item);
-    },
     // 加载数据
     load () {
       this.loading = true
@@ -250,17 +211,6 @@ export default {
         this.articleList = this.restaurants.slice(this.pnum, this.psize)
         this.loading = false
       }, 500)
-    },
-    // 去搜索页
-    GoSearch () {
-      console.log("front", this.searchlist);
-      this.$router.push(
-        {
-          path: "/search",
-          query: {
-            'articlelist': this.$qs.stringify(this.searchlist)
-          }        }
-      )
     },
   },
   components: {

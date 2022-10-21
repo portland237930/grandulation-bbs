@@ -3,19 +3,10 @@ export default [{
         redirect: "/userlogin",
     },
     {
-        path: "/home",
-        name: "home",
-        meta: {
-            showHeader: true,
-        },
-        component: () =>
-            import ("@/views/HomeView"),
-    },
-    {
         path: "/userlogin",
         name: "userlogin",
         component: () =>
-            import ("@/views/UserLogin"),
+            import ("@/views/UserLogin.vue"),
         meta: {
             showHeader: false,
         },
@@ -31,7 +22,7 @@ export default [{
     },
     {
         path: "/discuss",
-        name: "/discuss",
+        name: "discuss",
         component: () =>
             import ("@/views/Discuss"),
         meta: {

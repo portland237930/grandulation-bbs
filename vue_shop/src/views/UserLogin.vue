@@ -1,7 +1,12 @@
 <template>
   <div class="container">
     <div class="login-wrapper">
-      <div class="header">Login</div>
+      <kinesis-container>
+        <kinesis-element type="translate"
+                         :strength="20">
+          <div class="header">Login</div>
+        </kinesis-element>
+      </kinesis-container>
       <div class="form-wrapper">
         <el-form :rule="LoginRule"
                  ref="Loginform"
@@ -32,6 +37,9 @@
                appid="wxd4ac0386fed8e63b"
                scope="snsapi_login"
                :redirect_uri="encodeURIComponent(redirect_uri)"></wxlogin> -->
+      <wxlogin :appid="appid"
+               :scope="scope"
+               :redirect_uri="redirect_uri"></wxlogin>
       <div class="msg">
         No account yet
         <router-link to="/userregister">Register</router-link>
@@ -46,7 +54,7 @@ import "../assets/css/user.css"
 // 引入token
 import { setToken, setUid } from "../utils/Token"
 import wxlogin from 'vue-wxlogin';
-
+import { KinesisContainer, KinesisElement } from 'vue-kinesis'
 export default {
   name: 'UserLogin',
 
@@ -67,11 +75,16 @@ export default {
         ],
       },
       isloading: false,
+      appid: "",
+      scope: "",
       redirect_uri: "http://localhost:8080/home"
     };
   },
   components: {
-    wxlogin
+    wxlogin,
+    KinesisContainer,
+    KinesisElement
+
   },
   mounted () {
   },
@@ -94,7 +107,7 @@ export default {
         setUid(res.data.data.uid)
         this.isloading = false
         this.$message.success(res.data.msg)
-        this.$router.push("/home")
+        this.$router.push("/disucss")
       })
     }
   },
@@ -105,5 +118,4 @@ export default {
 .container {
   animation: zoomIn 0.5s ease;
 }
-
 </style>

@@ -1,5 +1,6 @@
 <template>
-  <div id="app" :style="autoHeight">
+  <div id="app"
+       :style="autoHeight">
     <el-backtop></el-backtop>
 
     <vue-particles class="app_bg"
@@ -22,6 +23,7 @@
     <Header id="header"
             v-show="$route.meta.showHeader" />
     <router-view class="router" />
+
   </div>
 </template>
 <script>
@@ -32,8 +34,8 @@ export default {
   data () {
     return {
       isLogin: false,
-      autoHeight:{
-          height:''
+      autoHeight: {
+        height: ''
       }
     }
   },
@@ -41,9 +43,9 @@ export default {
     Header,
   },
   methods: {
-    getHeight() {
-        this.autoHeight.height = (windowHeight + 110) + 'px';
-      },
+    getHeight () {
+      this.autoHeight.height = (windowHeight + 110) + 'px';
+    },
   },
   mounted () {
 
@@ -51,5 +53,4 @@ export default {
 }
 </script>
 <style>
-
 </style>

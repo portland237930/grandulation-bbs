@@ -18,10 +18,12 @@
         <el-menu-item index="4-3">退出登录</el-menu-item>
       </el-submenu>
       <div class="input-content">
-        <el-input v-model="searchContent"
-                  placeholder="请输入关键字"></el-input>
+        <el-autocomplete v-model="state"
+                         :fetch-suggestions="querySearchAsync"
+                         placeholder="请输入标题"></el-autocomplete>
         <el-button slot="append"
                    class="btn"
+                   @click="GoSearch"
                    icon="el-icon-search"></el-button>
       </div>
     </el-menu>
@@ -35,18 +37,13 @@ export default {
   data () {
     return {
       activeIndex: '1',
-      searchContent: ""
+      searchContent: "",
+      state: "",
+      restaurants: {},
+      reslist: [],
     };
   },
   watch: {
-    // $route(to,from){
-    //   switch (to) {
-    //     case "/home":
-    //       this.activeIndex = '1';
-    //       break;
-    //     case ""
-    //   }
-    // }
   },
   computed: {
   },
@@ -67,10 +64,13 @@ export default {
           address = '/publishArt'
           this.activeIndex = '1'
           break;
-        case '6-2':
+        case '4-1':
+          address = '/account/personal'
+          break
+        case '4-2':
           address = '/account/ownerarticle'
           break
-        case '6-3':
+        case '4-3':
           // 删除Token
           removeToken()
           // 删除Uid
@@ -78,16 +78,65 @@ export default {
           // 返回登录界面
           address = '/userlogin'
           break;
-        case '5':
-          address = '/userlogin'
-          break;
-        case '7':
-          address = '/publishArt'
-          this.activeIndex = '1'
         default:
           break;
       }
       this.$router.push(address)
+    },
+    // 去搜索页
+    GoSearch () {
+      console.log("front", this.searchlist);
+      this.$router.push(
+        {
+          path: "/search",
+          query: {
+            'articlelist': this.$qs.stringify(this.reslist)
+          }        }
+      )
+    },
+    // 异步搜索
+    async querySearchAsync (queryString, cb) {
+      var that = this
+      this.loadAll(queryString)
+      console.log('resultssea', that.reslist)
+      var titlelist = []
+      // this.searchlist = results
+      // 每隔一段时间进行搜索
+      clearTimeout(this.timeout);
+      this.timeout = setTimeout(() => {
+        that.reslist.forEach(item => {
+          titlelist.unshift({
+            'value': item.title
+          })
+        })
+        cb(titlelist)
+      }, 1000 * Math.random());
+
+    },
+    // 闭包查找相关信息
+    createStateFilter (queryString) {
+      return (state) => {
+        return (state.title.toLowerCase().indexOf(queryString.toLowerCase()) === 0);
+      };
+    },
+    // 获取所有文章接口
+    async loadAll (queryString) {
+      let { data: res } = await this.$axios.get(
+        '/getAllArticle',
+        {
+          params: {
+            'type': 'all'
+          }
+        }
+      )
+      console.log(res);
+      if (res.status == 200) {
+        this.restaurants = res.data
+        let restaurants = this.restaurants;
+        this.reslist = queryString ? restaurants.filter(this.createStateFilter(queryString)) : restaurants;
+
+      }
+
     },
   },
   created () {

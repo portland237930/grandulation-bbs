@@ -9,6 +9,7 @@ module.exports = {
                 }
             }
         }
-    }
-
+    },
+    // 配置根目录
+    // publicPath: '/dist'
 }
