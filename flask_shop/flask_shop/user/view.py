@@ -57,60 +57,70 @@ class User(Resource):
             return to_dict_msg(20000)
 
     def post(self):
+        isadmin=request.form.get('isadmin') if request.form.get('isadmin') else ''
         name = request.form.get('name')
         pwd = request.form.get('pwd')
         real_pwd = request.form.get('real_pwd')
         nick_name = request.form.get('nick_name')
         phone = request.form.get('phone')
         email = request.form.get('email')
-        # 验证数据的正确性
-        if not all([name,pwd,real_pwd]):
-            return to_dict_msg(10000)
-        if len(name) <2:
-            return to_dict_msg(10011)
-        if len(pwd) <2:
-            return to_dict_msg(10012)
-        if pwd != real_pwd:
-            return to_dict_msg(10013)
-        if not re.match(r'1[345678]\d{9}',phone):
-            return to_dict_msg(10014)
-        if not re.match(r'^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$',email):
-            return to_dict_msg(10015)
         try:
-            usr = models.User(name = name,password = pwd ,nick_name =nick_name,phone =phone,email = email,rid=1)
-            db.session.add(usr)
-            db.session.commit()
-            return {'status':200,'msg':'成功！'} 
-        except Exception:
+            # 如果是后台管理添加用户
+            if isadmin=='1':
+                usr = models.User(name = name,password = pwd ,nick_name =nick_name,phone =phone,email = email,rid=1)
+                db.session.add(usr)
+                db.session.commit()
+                return {'status':200,'msg':'成功！'} 
+            else:
+                # 验证数据的正确性
+                if not all([name,pwd,real_pwd]):
+                    return to_dict_msg(10000)
+                if len(name) <2:
+                    return to_dict_msg(10011)
+                if len(pwd) <2:
+                    return to_dict_msg(10012)
+                if pwd != real_pwd:
+                    return to_dict_msg(10013)
+                if not re.match(r'1[345678]\d{9}',phone):
+                    return to_dict_msg(10014)
+                if not re.match(r'^\w+((-\w+)|(\.\w+))*\@[A-Za-z0-9]+((\.|-)[A-Za-z0-9]+)*\.[A-Za-z0-9]+$',email):
+                    return to_dict_msg(10015)
+                usr = models.User(name = name,password = pwd ,nick_name =nick_name,phone =phone,email = email)
+                db.session.add(usr)
+                db.session.commit()
+                return {'status':200,'msg':'成功！'}
+        except Exception as e:
             return to_dict_msg(20000)
     def put(self):
         try:
             # 获取参数
-            id  = int(request.form.get('id').strip())
-            name=request.form.get("name").strip() if request.form.get('name') else ''
-            nick_name=request.form.get('nick_name').strip() if request.form.get('nick_name') else ''
-            email = request.form.get('email').strip() if request.form.get('email') else ''
-            phone = request.form.get('phone').strip() if request.form.get('phone') else ''
-            personal_info=request.form.get("personal_info").strip() if request.form.get('personal_info') else ''
+            id  = int(request.form.get('id')) if request.form.get("id") else 0
+            name=request.form.get("name") if request.form.get("name") else ''
+            nick_name=request.form.get('nick_name') if request.form.get("nick_name") else ''
+            email = request.form.get('email') if request.form.get("email") else ''
+            phone = request.form.get('phone') if request.form.get("phone") else ''
+            personal_info=request.form.get("personal_info") if request.form.get("personal_info") else ''
+            avatar_url=request.form.get('avatar_url') if request.form.get("avatar_url") else ''
             # 根据id获取用户
             usr = models.User.query.get(id)
             if usr:
                 # 更改信息
                 usr.name=name
-                usr.nick_name=nick_name
+                usr.nick_name=nick_name 
                 usr.email = email
                 usr.phone = phone
-                usr.personal_info=personal_info
+                usr.personal_info=personal_info 
+                usr.avatar_url=avatar_url
                 db.session.commit()
                 return to_dict_msg(200,msg='修改数据成功！')
             else:
                 return to_dict_msg(10018)
         except Exception as e:
             print(e)
-            return to_dict_msg(10000)
+            return to_dict_msg(20000)
     def delete(self):
         try:
-            id  = request.json.get('id')
+            id  = request.args.get('id')
             usr = models.User.query.get(id)
             if usr:
                 db.session.delete(usr)
@@ -222,6 +232,19 @@ def avatar_url():
             return to_dict_msg(200,msg='上传头像成功')
         else:
             return to_dict_msg(10022)
+    except Exception as e:
+        print(e)
+        return to_dict_msg(20000)
+@user.route("/alluser",methods=['GET'])
+def alluser():
+    try:
+        usr = models.User.query.all()
+        # res=usr.to_dict()            # res.role=role
+        if usr:
+            ulist=[u.to_dict() for u in usr]
+            return to_dict_msg(200,ulist,'获取用户成功！')
+        else:
+            return to_dict_msg(200,[],'没有此用户！')
     except Exception as e:
         print(e)
         return to_dict_msg(20000)

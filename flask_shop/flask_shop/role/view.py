@@ -23,9 +23,17 @@ class Role(Resource):
 		# 接收参数
 		name=request.form.get('name')
 		desc=request.form.get('desc')
+		mids=request.form.get("mids")
 		try:
 			if name:
 				role=models.Role(name=name,desc=desc)
+				if mids:
+					for m in mids.split(','):
+							if m:
+								# 获取权限
+								temp_menu=models.Permission.query.get(int(m))
+								if temp_menu:
+									role.permission.append(temp_menu)
 				db.session.add(role)
 				db.session.commit()
 				return to_dict_msg(200,msg="增加角色成功")
@@ -36,7 +44,7 @@ class Role(Resource):
 	# 删除角色
 	def delete(self):
 		try:
-			id=int(request.form.get("id"))
+			id=int(request.args.get("id"))
 			# 获得用户
 			r=models.Role.query.get(id)
 			if r:

@@ -37,9 +37,9 @@
                appid="wxd4ac0386fed8e63b"
                scope="snsapi_login"
                :redirect_uri="encodeURIComponent(redirect_uri)"></wxlogin> -->
-      <wxlogin :appid="appid"
+      <!-- <wxlogin :appid="appid"
                :scope="scope"
-               :redirect_uri="redirect_uri"></wxlogin>
+               :redirect_uri="redirect_uri"></wxlogin> -->
       <div class="msg">
         No account yet
         <router-link to="/userregister">Register</router-link>
@@ -107,7 +107,7 @@ export default {
         setUid(res.data.data.uid)
         this.isloading = false
         this.$message.success(res.data.msg)
-        this.$router.push("/disucss")
+        this.$router.push("/")
       })
     }
   },

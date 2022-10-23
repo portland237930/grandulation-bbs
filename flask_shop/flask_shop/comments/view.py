@@ -4,6 +4,7 @@ from flask import request
 from flask_restful import Resource
 import re
 from flask_shop.utils.message import to_dict_msg
+from datetime import datetime
 
 # 评论接口
 class Comments(Resource):
@@ -31,17 +32,36 @@ class Comments(Resource):
 			# 收集参数
 			aid=int(request.args.get('aid').strip()) if request.args.get('aid') else 0
 			content=request.form.get("content").strip() if request.form.get("content") else ''
+			create_time=request.form.get("create_time").strip() if request.form.get("create_time") else datetime.now()
 			art=models.Article.query.filter_by(id=aid).first()
 			uid=art.pid if art.pid else 0
 			# 如果参数收集成功
-			if art and uid and content:
+			if art:
 				# 创建评论
-				comment=models.Comment(content=content,aid=aid,uid=uid)
+				comment=models.Comment(content=content,aid=aid,uid=uid,create_time=create_time,update_time=create_time)
 				db.session.add(comment)
 				db.session.commit()
 				return to_dict_msg(200,msg="评论成功")
 			else:
 				return to_dict_msg(10029)
+		except Exception as e:
+			print(e)
+			return to_dict_msg(20000)
+	def put(self):
+		try:
+			cid=int(request.form.get("id"))
+			create_time=request.form.get("create_time").strip() if request.form.get("create_time") else datetime.now()
+			content=request.form.get("content") if request.form.get("content") else ''
+			comment=models.Comment.query.get(cid)
+			if comment:
+				# create_time=datetime.strptime(create_time,"%m/%d/%y %H:%M:%S")
+				comment.create_time=create_time
+				comment.update_time=create_time
+				comment.content=content
+				db.session.commit()
+				return to_dict_msg(200,msg='修改成功')
+			else:
+				return to_dict_msg(10033)
 		except Exception as e:
 			print(e)
 			return to_dict_msg(20000)
@@ -122,4 +142,35 @@ def addthumb():
 		except Exception as e:
 			print(e)
 			return to_dict_msg(20000)
+@comments.route("/getArticleToComment",methods=['GET'])
+def getArticleToComment():
+	try:
+		id=request.args.get("id")
+		comments=models.Comment.query.filter_by(aid=id).all()
+		if comments:
+			clist=[c.to_dict() for c in comments]
+			return to_dict_msg(200,data=clist,msg="获取评论成功")
+		else:
+			return to_dict_msg(10028)
+	except Exception as e:
+		print(e)
+		return to_dict_msg(20000)
+
+@comments.route("/publishComment",methods=['POST'])
+def publishComment():
+	try:
+		id=int(request.form.get('id')) if request.form.get('id') else 0
+		content=request.form.get('content')
+		art=models.Article.query.get(id)
+		if art:
+			uid=art.pid if art.pid else 0
+			comment=models.Comment(content=content,aid=id,uid=uid)
+			db.session.add(comment)
+			db.session.commit()
+			return to_dict_msg(200,msg="评论成功")
+		else:
+			return to_dict_msg(10026)
+	except Exception as e:
+		print(e)
+		return to_dict_msg(20000)
 comments_api.add_resource(Comments,'/comments')

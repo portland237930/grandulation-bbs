@@ -38,7 +38,7 @@ VueRouter.prototype.replace = function(location, resolve, reject) {
 };
 
 const router = new VueRouter({
-    mode: "history",
+    // mode: "history",
     // base: process.env.BASE_URL,
     routes,
     scrollBehavior(to, from, savedPosition) {
@@ -53,7 +53,7 @@ router.beforeEach(async(to, from, next) => {
     let tokenStr = getToken("TOKEN");
     if (!tokenStr && to.name != "userlogin") next("/userlogin");
     // 自动登录
-    if (to.path == "/userlogin" && tokenStr) {
+    if (to.name == "userlogin" && tokenStr) {
         return next("/discuss");
     }
     next();

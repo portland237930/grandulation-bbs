@@ -1,7 +1,6 @@
 from flask_shop import db
 from werkzeug.security import generate_password_hash, check_password_hash
 from datetime import datetime
-
 # 基类,使每个表都拥有时间
 class BaseModel:
     create_time = db.Column(db.DateTime, default=datetime.now)
@@ -25,7 +24,7 @@ class User(db.Model, BaseModel):
     email = db.Column(db.String(32)) # 电子邮箱
     avatar_url=db.Column(db.String(255),default='') # 头像路径
     personal_info=db.Column(db.String(255)) #用户简介 
-    rid=db.Column(db.Integer,db.ForeignKey('t_role.id')) # 角色id
+    rid=db.Column(db.Integer,db.ForeignKey('t_role.id',ondelete="SET NULL")) # 角色id
     aid=db.relationship("Article",backref="user") # 一对多
     cid=db.relationship("Comment",backref="cuser") # 一对多
     @property
@@ -59,7 +58,7 @@ class Role(db.Model,BaseModel):
 	name=db.Column(db.String(32),unique=True,nullable=False)# 角色名
 	desc=db.Column(db.String(64))
     # 设置用户表的关联字段
-	users=db.relationship('User',backref="role")
+	users=db.relationship('User',backref="Role", lazy="dynamic")
 	permission=db.relationship('Permission',secondary=trm) # 多对多关联
 	def to_dict(self):
 		return {
@@ -121,3 +120,5 @@ class Comment(db.Model,BaseModel):
             'content': self.content if self.content else '',
             'thumb':self.thumb if self.thumb else 0
         }
+
+

@@ -35,6 +35,8 @@
          comment">
         <div slot="header">
           <h2 style="display:inline-block;">全部评论</h2>
+          <el-button type="text"
+                     @click="dialogVisible=true">发表你的评论</el-button>
           <span v-if="article.commentlist"
                 style="display:inline-block;margin-left:5px;">{{article.commentlist.length}}</span>
           <span style="display:inline-block;margin-left:5px;"
@@ -56,6 +58,19 @@
                        :total="total"
                        class="pagination">
         </el-pagination>
+        <el-dialog title="提示"
+                   :visible.sync="dialogVisible"
+                   width="30%"
+                   :before-close="handleClose">
+          <el-input v-model="content"
+                    placeholder="请输入评论"></el-input>
+          <span slot="footer"
+                class="dialog-footer">
+            <el-button @click="dialogVisible = false">取 消</el-button>
+            <el-button type="primary"
+                       @click="pubComment">确 定</el-button>
+          </span>
+        </el-dialog>
       </el-card>
     </div>
 
@@ -75,7 +90,9 @@ export default {
       imgUrl: [],
       pnum: 1,
       psize: 4,
-      total: 0
+      total: 0,
+      content: "",
+      dialogVisible: false
     };
   },
 
@@ -113,6 +130,35 @@ export default {
       console.log(this.pnum);
       let cnum = (this.pnum - 1) * this.commentlist.length
       this.commentlist = this.article.commentlist.slice(cnum, cnum + this.psize)
+    },
+    handleClose () {
+      this.dialogVisible = false
+      this.content = ''
+    },
+    async getCommentList () {
+      const { data: res } = await this.$axios.get("/getArticleToComment", {
+        params: {
+          'id': this.article.id
+        }
+      })
+      if (res.status == 200) {
+        this.article.commentlist = res.data
+        this.total = this.article.commentlist.length
+        this.pageChange(1)
+      }
+    },
+    async pubComment () {
+      if (!this.content) return this.$message.error('请输入评论')
+      var that = this
+      console.log(that.article.id, that.content);
+
+      const { data: res } = await this.$axios.post("/publishComment", this.$qs.stringify({ 'id': that.article.id, 'content': that.content }))
+      console.log(res);
+      if (res.status == 200) {
+        this.$message.success(res.msg)
+        this.dialogVisible = false
+        this.getCommentList()
+      }
     }
   },
 };

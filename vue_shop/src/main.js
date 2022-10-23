@@ -47,6 +47,7 @@ import "swiper/dist/css/swiper.css";
 // 引入控制台
 import * as fundebug from "fundebug-javascript";
 import FundebugVue from "fundebug-vue";
+// 引入播放器
 fundebug.apikey =
     "37e494002c1cca977a1edc1221ff8edf6b11a1af1785698ae2d91d885c9265f3";
 new FundebugVue(fundebug).installVueErrorHandler(Vue); // Vue 2.x

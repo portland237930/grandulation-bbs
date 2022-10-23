@@ -158,3 +158,42 @@ def search():
 		return to_dict_msg(20000)
 
 article_api.add_resource(Article,'/article')
+@article.route("/updateArticle",methods=['PUT'])
+def updateArticle():
+	try:
+		id=request.form.get('id')
+		content=request.form.get('content')
+		title=request.form.get('title')
+		cover=request.form.get('cover')
+		thumb=int(request.form.get('thumb')) if request.form.get('thumb') else 0
+		viewed=int(request.form.get('viewed')) if request.form.get('viewed') else 0
+		article=models.Article.query.get(id)
+		if article:
+			article.content=content
+			article.title=title
+			article.cover=cover
+			article.thumb=thumb
+			article.viewed=viewed
+			db.session.commit()
+			return to_dict_msg(200,msg='修改文章成功')
+		else:
+			return to_dict_msg(10026)
+	except Exception as e:
+		print(e)
+		return to_dict_msg(20000)
+
+@article.route("/deleteArticle",methods=["DELETE"])
+def deleteArticle():
+	try:
+		id=request.args.get("id")
+		article=models.Article.query.get(id)
+		if article:
+			db.session.delete(article)
+			db.session.commit()
+			return to_dict_msg(200,msg='删除成功')
+		else:
+			return to_dict_msg(10026)
+	except Exception as e:
+		print(e)
+		return to_dict_msg(20000)
+	

@@ -1,6 +1,6 @@
 export default [{
         path: "/",
-        redirect: "/userlogin",
+        redirect: "/discuss",
     },
     {
         path: "/userlogin",
