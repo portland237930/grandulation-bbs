@@ -57,6 +57,49 @@ class User(Resource):
             return to_dict_msg(20000)
 
     def post(self):
+        """
+    @api {post} /api/v1.0/users 注册
+    @apiVersion 1.0.0
+    @apiName register_user
+    @apiGroup Users
+    @apiParam {String}  name      (必须)    用户名
+    @apiParam {String}  pwd    (必须)    用户密码
+    @apiParam {String}  real_pwd    (必须)    重复密码
+    @apiParam {String}  email    (必须)    用户邮箱
+    @apiParam {String}  phone    (必须)    用户电话
+    @apiParamExample {json} Request-Example:
+        {
+            mobile: "13970512239",
+            password: "123456",
+            sms_code: "907896"
+        }
+
+    @apiSuccess (回参) {int} user_id  用户注册id
+    @apiSuccess (回参) {String} name  用户昵称
+    @apiSuccess (回参) {String} mobile  用户注册手机号
+    @apiSuccess (回参) {String} avatar  用户头像地址
+    @apiSuccess (回参) {String} create_time  用户创建时间
+    @apiSuccessExample {json} Success-Response:
+        {
+            "code":200,
+            "errmsg":"注册成功！",
+            "data": {
+                "user_id": 1,
+                "name": "lynnyq",
+                "mobile": "13813888888",
+                "avatar": "http://p3ifu3dwc.bkt.clouddn.com/FjuAwxmcCtiud_nOZ",
+                "create_time": "2010-1-1 12:12:12"
+
+            }
+        }
+
+    @apiErrorExample {json} Error-Response:
+        {
+            "errno":20000,
+            "errmsg":"异常错误"
+        }
+
+    """
         isadmin=request.form.get('isadmin') if request.form.get('isadmin') else ''
         name = request.form.get('name')
         pwd = request.form.get('pwd')
@@ -88,7 +131,7 @@ class User(Resource):
                 usr = models.User(name = name,password = pwd ,nick_name =nick_name,phone =phone,email = email)
                 db.session.add(usr)
                 db.session.commit()
-                return {'status':200,'msg':'成功！'}
+                return {'status':200,'msg':'注册成功！'}
         except Exception as e:
             return to_dict_msg(20000)
     def put(self):
@@ -254,3 +297,4 @@ def alluser():
 @login_required
 def test_login_req():
     return to_dict_msg(200)
+

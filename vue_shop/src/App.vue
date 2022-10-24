@@ -94,7 +94,7 @@ export default {
     },
     openList: debounce(function () {
       this.ismini = !this.ismini;
-    }, 200),
+    }, 500),
     // 防抖函数
     debounce (fn, wait) {
       var timer = null;

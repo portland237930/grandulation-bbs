@@ -3,6 +3,7 @@ from flask_sqlalchemy import SQLAlchemy
 from config import config_map
 from flask_admin import Admin, BaseView, expose
 from flask_docs import ApiDoc
+from flask_mail import Mail, Message
 db = SQLAlchemy()
 # 初始化app
 def create_app(config_name):
@@ -17,6 +18,7 @@ def create_app(config_name):
     version="1.0.0",
     description="论坛API",
     )
+
     db.init_app(app)
     # 蓝图注册
     from flask_shop.user import user

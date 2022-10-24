@@ -1,6 +1,7 @@
 <template>
   <div class="container">
-    <div class="login-wrapper">
+    <div class="login-wrapper"
+         style="height:588px">
       <kinesis-container>
         <kinesis-element type="translate"
                          :strength="20">

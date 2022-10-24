@@ -51,7 +51,7 @@ const router = new VueRouter({
 // 前置路由自动登录
 router.beforeEach(async(to, from, next) => {
     let tokenStr = getToken("TOKEN");
-    if (!tokenStr && to.name != "userlogin") next("/userlogin");
+    if (!tokenStr && to.name != "userlogin" && to.name != 'userregister') next("/userlogin");
     // 自动登录
     if (to.name == "userlogin" && tokenStr) {
         return next("/discuss");

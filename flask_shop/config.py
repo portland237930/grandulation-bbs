@@ -14,7 +14,15 @@ class Config:
     SQLALCHEMY_DATABASE_URI = f'{MYSQL_DIALECT}+{MYSQL_DIRVER}://{MYSQL_NAME}:{MYSQL_PWD}@{MYSQL_HOST}:{MYSQL_PORT}/{MYSQL_DB}?charset={MYSQL_CHARSET}'
     SQLALCHEMY_TRACK_MODIFICATIONS = True
     SECRET_KEY = os.urandom(16)
-    API_DOC_MEMBER=['user']
+    MAIL_SERVER='smtp.qq.com'
+    MAIL_PORT=465
+    MAIL_PASSWORD="aekyayjvlbcxeade"
+    MAIL_USE_TLS=False
+    MAIL_USE_SSL=True
+    MAIL_DEFAULT_SENDER="2279789157@qq.com"
+    API_DOC_MEMBER=['user','role','permission','article','comment']
+    MAIL_USERNAME='2279789157@qq.com'
+    MAIL_SUPPRESS_SEND=False
     # 使用 CDN
     API_DOC_CDN = True
     API_DOC_METHODS_LIST = ["GET", "POST", "PUT", "DELETE", "PATCH"]

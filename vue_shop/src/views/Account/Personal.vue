@@ -12,7 +12,7 @@
                class="avatar-img"
                :src="editForm.avatar_url"></img>
         </el-upload>
-        <span class="username">{{editForm.nick_name?editForm.nick_name:'请先登录'}}</span>
+        <span class="username">{{editForm.nick_name?editForm.nick_name:'无'}}</span>
         <span class="levelicon el-icon-user-solid">{{role.name}}</span>
       </div>
     </el-card>
