@@ -87,8 +87,8 @@
             </li>
             <li>
               <div>
-                <a href="#"
-                   class="title">开发进程</a>
+                <a href="http://localhost:5000/docs/api"
+                   class="title">开发文档</a>
                 <p>开发文档全公布</p>
               </div>
               <a href="#"

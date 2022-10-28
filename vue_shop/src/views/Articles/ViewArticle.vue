@@ -14,8 +14,14 @@
         <div class="vts">
           <p style="margin-left:5px;">
             <span>浏览</span>
-            <i style="margin:0px 2px;"
+            <i :style="isviewed?'margin:0px 2px;color:#e74c3c':'margin:0px 2px;'"
                class="el-icon-view"></i>{{article.viewed}}</p>
+        </div>
+        <div class="vts">
+          <p style="margin-left:5px;">
+            <span>点赞</span>
+            <i style="margin:0px 2px;"
+               class="el-icon-thumb"></i>{{article.thumb}}</p>
         </div>
       </div>
       <div class="words">
@@ -33,14 +39,33 @@
          style="width:100%;">
       <el-card class="
          comment">
-        <div slot="header">
+        <div slot="header"
+             class="comment-top">
           <h2 style="display:inline-block;">全部评论</h2>
-          <el-button type="text"
-                     @click="dialogVisible=true">发表你的评论</el-button>
-          <span v-if="article.commentlist"
-                style="display:inline-block;margin-left:5px;">{{article.commentlist.length}}</span>
-          <span style="display:inline-block;margin-left:5px;"
+          <span class="comment-num"
+                v-if="article.commentlist">{{article.commentlist.length}}</span>
+          <span class="comment-num"
                 v-else>0</span>
+
+          <el-button class="el-icon-s-comment comment-btn"
+                     type="info"
+                     style="float:right;margin-top:20px"
+                     circle
+                     @click="dialogVisible=true"></el-button>
+          <div class="thumb-content">
+            <vue-star animate="animated bounceIn"
+                      color="#F05654">
+              <img @click="thumb"
+                   slot="icon"
+                   v-show="!isThumb"
+                   src="@/assets/icon/unlike.png" />
+              <img @click="thumb"
+                   slot="icon"
+                   v-show="isThumb"
+                   src="@/assets/icon/like.png" />
+            </vue-star>
+          </div>
+
         </div>
         <el-card class="viewlist"
                  v-for="c in commentlist"
@@ -78,9 +103,13 @@
 </template>
 
 <script>
+import VueStar from 'vue-star'
+import { getUid } from "@/utils/Token.js"
 export default {
   name: 'ViewArticle',
-
+  components: {
+    VueStar
+  },
   data () {
     return {
       article: {},
@@ -91,8 +120,10 @@ export default {
       pnum: 1,
       psize: 4,
       total: 0,
+      isThumb: true,
       content: "",
-      dialogVisible: false
+      dialogVisible: false,
+      isviewed: false
     };
   },
 
@@ -120,7 +151,8 @@ export default {
     } else {
       this.commentlist = []
     }
-
+    this.getThumbStatus()
+    this.ViewedStatus()
     console.log(this.imgUrl);
   },
   methods: {
@@ -131,10 +163,12 @@ export default {
       let cnum = (this.pnum - 1) * this.commentlist.length
       this.commentlist = this.article.commentlist.slice(cnum, cnum + this.psize)
     },
+    // 关闭对话框
     handleClose () {
       this.dialogVisible = false
       this.content = ''
     },
+    // 获取评论列表
     async getCommentList () {
       const { data: res } = await this.$axios.get("/getArticleToComment", {
         params: {
@@ -147,6 +181,7 @@ export default {
         this.pageChange(1)
       }
     },
+    // 发布评论
     async pubComment () {
       if (!this.content) return this.$message.error('请输入评论')
       var that = this
@@ -159,6 +194,85 @@ export default {
         this.dialogVisible = false
         this.getCommentList()
       }
+    },
+    // 点赞
+    async thumb () {
+      let uid = getUid()
+      let aid = this.article.id
+      let datas = this.$qs.stringify({
+        'aid': aid,
+        'uid': uid,
+        'type': 'thumb'
+      })
+      console.log(datas)
+      const { data: res } = await this.$axios.post("/addart", datas)
+      if (res.status == 200) {
+        this.isThumb = res.data
+        this.getArticle(uid, aid)
+        this.$message.success(res.msg)
+
+      }
+    },
+    // 获取点赞状态
+    async getThumbStatus () {
+      let uid = getUid()
+      let aid = this.article.id
+      const { data: res } = await this.$axios.get('/thumbAndviewedstatus', {
+        params: {
+          'uid': uid,
+          'aid': aid,
+          'type': 'thumb'
+        }
+      })
+      if (res.status == 200) {
+        this.isThumb = res.data
+      }
+    },
+    // 重新获取文章数据
+    async getArticle (uid, aid) {
+      const { data: res } = await this.$axios.get('/article', {
+        params: {
+          'type': 'only',
+          'uid': uid,
+          'aid': aid
+        }
+      })
+      if (res.status == 200) {
+        this.article = res.data
+      }
+    },
+    // 获取浏览状态
+    async ViewedStatus () {
+      let uid = getUid()
+      let aid = this.article.id
+      // 获取浏览状态
+      const { data: res } = await this.$axios.get('/thumbAndviewedstatus', {
+        params: {
+          'uid': uid,
+          'aid': aid,
+          'type': 'viewed'
+        }
+      })
+      if (res.status == 200) {
+        // 未浏览则设置浏览状态为已浏览
+        if (res.data == false) {
+          let datas = this.$qs.stringify(
+            {
+              'uid': uid,
+              'aid': aid,
+              'type': "viewed"
+            }
+          )
+          const { data: res1 } = await this.$axios.post('/addart', datas)
+          if (res1.status == 200) {
+            this.isviewed = true
+          }
+        }else{
+          this.isviewed=res.data
+        }
+      }
+      // 重新获取文章数据
+      this.getArticle(uid, aid)
     }
   },
 };
@@ -247,5 +361,53 @@ export default {
 .pagination {
   width: 100%;
   float: left;
+}
+
+/** 动画进行时的class **/
+.zoom-enter-active,
+.zoom-leave-active {
+  transition: all 0.5s cubic-bezier(0.42, 0, 0.34, 1.55);
+}
+
+/** 设置进场开始的状态和离场结束的状态，都是缩放到0 **/
+.zoom-enter,
+.zoom-leave-to {
+  transform: scale(0);
+}
+
+/** 设置进场结束的状态和离场开始的状态, 都是缩放到1 **/
+.zoom-enter-to,
+.zoom-leave {
+  transform: scale(1);
+}
+.comment >>> .el-card__header {
+  height: 100px;
+}
+.comment-top {
+  float: left;
+  width: 100%;
+  height: 100px;
+}
+.comment-num {
+  margin-top: 30px;
+  margin-left: 5px;
+}
+
+.thumb-content {
+  position: relative;
+  width: 100px;
+  float: right;
+}
+.thumb-content img {
+  width: 30px;
+  height: 30px;
+  margin-bottom: 15px;
+}
+.comment-btn {
+  float: right;
+  margin-right: 70px;
+}
+.isviewed {
+  color: #e74c3c;
 }
 </style>

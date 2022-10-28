@@ -151,7 +151,7 @@ export default {
         console.log(res);
 
         // 验证结果
-        if (res.status !== 200) return this.$msg.error(res.msg)
+        if (res.status !== 200) return this.$message.error(res.msg)
         this.$message.success(res.msg)
         // 重置增加用户表单
         this.$refs.RegForm.resetFields()

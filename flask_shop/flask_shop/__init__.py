@@ -4,6 +4,9 @@ from config import config_map
 from flask_admin import Admin, BaseView, expose
 from flask_docs import ApiDoc
 from flask_mail import Mail, Message
+from flask_restplus import Resource, Api, fields
+import logging
+from logging.handlers import TimedRotatingFileHandler
 db = SQLAlchemy()
 # 初始化app
 def create_app(config_name):
@@ -18,6 +21,21 @@ def create_app(config_name):
     version="1.0.0",
     description="论坛API",
     )
+    #配置log
+ 
+    formatter = logging.Formatter(
+ 
+        "[%(asctime)s][%(filename)s:%(lineno)d][%(levelname)s][%(thread)d] - %(message)s")
+ 
+    handler = TimedRotatingFileHandler(
+ 
+        "flask.log", when="D", interval=1, backupCount=15,
+ 
+        encoding="UTF-8", delay=False, utc=True)
+ 
+    app.logger.addHandler(handler)
+ 
+    handler.setFormatter(formatter)
 
     db.init_app(app)
     # 蓝图注册
@@ -31,9 +49,11 @@ def create_app(config_name):
     app.register_blueprint(article)
     from flask_shop.comments import comments
     app.register_blueprint(comments)
+    from flask_shop.wxuser import wxuser
+    app.register_blueprint(wxuser)
     return app
+    
 app=create_app('develop')
-
-
 if __name__ == "__main__":
+    # app.run(ssl_context=('server.crt', 'server.key'))
     app.run()

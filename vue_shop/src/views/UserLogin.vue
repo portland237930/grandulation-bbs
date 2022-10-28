@@ -1,7 +1,7 @@
 <template>
   <div class="container">
     <div class="login-wrapper"
-         style="height:588px">
+         style="height:488px">
       <kinesis-container>
         <kinesis-element type="translate"
                          :strength="20">
@@ -32,15 +32,6 @@
                    :loading="isloading"
                    class="btn">Login</el-button>
       </div>
-      <!-- <wxlogin href='data:text/css;base64,LmltcG93ZXJCb3ggLnFyY29kZSB7CiAgICB3aWR0aDogMTUwcHg7Cn0KLmltcG93ZXJCb3ggLnRpdGxlIHsKICAgIHRleHQtYWxpZ246IGxlZnQ7CiAgICBmb250LXNpemU6IDE2cHg7CiAgICBmb250LXdlaWdodDogYm9sZDsKfQ=='
-               id="wxcode"
-               theme=''
-               appid="wxd4ac0386fed8e63b"
-               scope="snsapi_login"
-               :redirect_uri="encodeURIComponent(redirect_uri)"></wxlogin> -->
-      <!-- <wxlogin :appid="appid"
-               :scope="scope"
-               :redirect_uri="redirect_uri"></wxlogin> -->
       <div class="msg">
         No account yet
         <router-link to="/userregister">Register</router-link>
@@ -76,9 +67,9 @@ export default {
         ],
       },
       isloading: false,
-      appid: "",
-      scope: "",
-      redirect_uri: "http://localhost:8080/home"
+      bast64css: 'data:text/css;base64,LmltcG93ZXJCb3ggLnFyY29kZSB7d2lkdGg6IDIwMHB4O2hlaWdodDoyMDBweH0NCi5pbXBvd2VyQm94IC5pbmZvIHt3aWR0aDogMjAwcHh9DQouc3RhdHVzX2ljb24ge2Rpc3BsYXk6IG5vbmV9DQouaW1wb3dlckJveCAuc3RhdHVzIHt0ZXh0LWFsaWduOiBjZW50ZXI7fQ0KLmltcG93ZXJCb3ggLnRpdGxlIHtkaXNwbGF5OiBub25lfQ0KaWZyYW1lIHtoZWlnaHQ6IDMyMnB4O30NCg==',
+      appid: "wx7287a60bb700fd21",
+      redirect_uri: "/user/wx_login"
     };
   },
   components: {
@@ -110,7 +101,7 @@ export default {
         this.$message.success(res.data.msg)
         this.$router.push("/")
       })
-    }
+    },
   },
 };
 </script>

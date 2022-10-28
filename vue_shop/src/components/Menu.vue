@@ -108,12 +108,12 @@ export default {
       if (res.status != 200) return this.$message.error(res.msg)
       this.$message.success(res.msg)
       // 返回主页
-      this.$router.push('/home')
+      this.$router.push('/disucss')
     },
     // 取消发布返回页面
     BackHome () {
       this.data = {}
-      this.$router.push("/home")
+      this.$router.push("/discuss")
     },
     // 完成编辑按钮
     async compEdit () {
@@ -134,7 +134,7 @@ export default {
       if (res.status != 200) return this.$message.error(res.msg)
       this.$message.success(res.msg)
       // 跳转回主页
-      this.$router.push("/home")
+      this.$router.push("/discuss")
     },
     // 打开菜单
     openMenu () {

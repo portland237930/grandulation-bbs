@@ -27,6 +27,10 @@ class User(db.Model, BaseModel):
     rid=db.Column(db.Integer,db.ForeignKey('t_role.id',ondelete="SET NULL")) # 角色id
     aid=db.relationship("Article",backref="user") # 一对多
     cid=db.relationship("Comment",backref="cuser") # 一对多
+    tid=db.relationship("Thumb",backref="tuser",uselist=False) #一对多
+    tid=db.relationship("Viewed",backref="vuser",uselist=False) #一对多
+    # user=db.relationship("WxUser",uselist=False,backref='User')
+    
     @property
     def password(self):
         return self.pwd
@@ -89,6 +93,8 @@ class Article(db.Model,BaseModel):
     cover=db.Column(db.String(255)) # 文章封面
     pid=db.Column(db.Integer,db.ForeignKey('t_user.id'))
     cid=db.relationship("Comment",backref="article")
+    tid=db.relationship("Thumb",backref="thumb_article",uselist=False)
+    vid=db.relationship("Viewed",backref="viewed_article",uselist=False)
     def to_dict(self):
         return {
             'id':self.id if self.id else 0,
@@ -120,5 +126,44 @@ class Comment(db.Model,BaseModel):
             'content': self.content if self.content else '',
             'thumb':self.thumb if self.thumb else 0
         }
+# 微信绑定用户表
+class WxUser(db.Model,BaseModel):
+    __tablename__ = 't_wxuser'
+    id=db.Column(db.Integer,primary_key=True)
+    wxid=db.Column(db.String(255),nullable=False)
+    nick_name=db.Column(db.String(255))
+    user_id = db.Column(db.Integer, db.ForeignKey("t_user.id"),unique=True)
+    users = db.relationship("User", backref=db.backref("User"), uselist=False)
+    avatar_url=db.Column(db.String(255))
+    def to_dict(self):
+        return {
+            'id':int(self.id) if self.id else 0,
+            'nick_name':self.nick_name if self.nick_name else '',
+            'avatar_url':self.avatar_url if self.avatar_url else ''
+        }
 
+# 点赞表
+class Thumb(db.Model):
+    __tablename__="t_thumb"
+    id=db.Column(db.Integer,primary_key=True)
+    uid=db.Column(db.Integer,db.ForeignKey('t_user.id'))
+    aid=db.Column(db.Integer,db.ForeignKey("t_article.id"))
+    isthumb=db.Column(db.Boolean,default=False) # 点赞状态
+    def to_dict(self):
+        return {
+            'uid':int(self.uid) if self.uid else 0,
+            'aid':int(self.aid) if self.aid else 0
+        }
 
+# 浏览表
+class Viewed(db.Model):
+    __tablename__="t_viewed"
+    id=db.Column(db.Integer,primary_key=True)
+    uid=db.Column(db.Integer,db.ForeignKey('t_user.id'))
+    aid=db.Column(db.Integer,db.ForeignKey("t_article.id"))
+    isviewed=db.Column(db.Boolean,default=False) # 浏览状态
+    def to_dict(self):
+        return {
+            'uid':int(self.uid) if self.uid else 0,
+            'aid':int(self.aid) if self.aid else 0
+        }

@@ -20,6 +20,40 @@ class Role(Resource):
 			return to_dict_msg(20000)
 	# 增加角色接口
 	def post(self):
+		"""增加角色接口
+
+    @@@
+    ### description
+    > 增加角色接口
+
+    ### args
+    |  args | nullable | request type | type |  remarks |
+    |-------|----------|--------------|------|----------|
+    |  name   |  false   |    form      | str  | 角色名  |
+    |  desc   |  false   |    form      | str  | 角色描述  |
+
+    ### request
+    ```json
+    {
+        "name": "xxx",
+        'desc':'xxx'
+    }
+    ```
+
+    ### 重置密码成功返回
+    ```json
+    {"status": 200, "msg": "增加角色成功"}
+    ``` 
+    ### 没有此数据返回
+    ```json
+    {"status": 10000, "msg": "数据不完整"}}
+    ```     
+    ### 错误返回
+    ```json
+    {"status": 20000, "msg": "异常错误"}}
+    ```  
+    @@@
+    """
 		# 接收参数
 		name=request.form.get('name')
 		desc=request.form.get('desc')

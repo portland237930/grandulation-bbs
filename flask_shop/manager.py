@@ -67,4 +67,5 @@ def index():
 
 if __name__ == "__main__":
     # app.run() 
+    # manager.run(ssl_context=('server.crt', 'server.key'))
     manager.run()

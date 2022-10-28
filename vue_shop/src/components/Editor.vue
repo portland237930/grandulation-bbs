@@ -175,6 +175,7 @@ export default {
 .edit_container {
   width: 70%;
   background-color: #fff;
+  margin: 20px 0px;
   padding: 10px;
 }
 .edit_container >>> .el-card__body {
