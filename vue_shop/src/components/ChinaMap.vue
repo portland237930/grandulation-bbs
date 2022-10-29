@@ -1,7 +1,7 @@
 <template>
   <div>
     <div ref='mapbox'
-         style='width:570px;height:270px;margin:0 auto;'></div>
+         style='width:520px;height:240px;margin:0 auto;padding:20px'></div>
   </div>
 </template>
 
@@ -11,9 +11,8 @@ import 'echarts/map/js/china.js'
 import jsonp from 'jsonp'
 const option = {
   title: {
-    text: "全国疫情地图",
+    text: "COVID-19 statistics | 24hours",
     link: "https://blog.csdn.net/image_fzx",
-    subtext: "防疫工作,人人有责",
     sublink: "https://blog.csdn.net/image_fzx"
   },
   // ----------   series：地图数据可视化，添加data数据    ---------------------

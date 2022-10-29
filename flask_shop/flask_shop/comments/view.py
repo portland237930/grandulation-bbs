@@ -10,6 +10,45 @@ from datetime import datetime
 class Comments(Resource):
 	# 获取指定评论接口
 	def get(self):
+		"""获取指定评论接口
+
+    @@@
+    ### description
+    > 获取指定评论接口
+
+    ### args
+    |  args | nullable | request type | type |  remarks |
+    |-------|----------|--------------|------|----------|
+    |  cid   |  false   |    args      | str  | 评论id |
+    |  aid    |  false   |    args       | str  | 文章id |
+    |  art   |  false   |    query      | str  | art |
+    |  comment    |  false   |    query       | str  | 评论 |
+    
+
+    ### request
+    ```json
+    {
+        "cid": "xxx",
+        'aid':'xxx'
+        "art": "xxx",
+        'comment':'xxx'
+    }
+    ```
+
+    ### 重置密码成功返回
+    ```json
+    {"status": 200, "msg": "评论成功"}
+    ``` 
+    ### 没有此数据返回
+    ```json
+    {"status": 10030, "msg": "指定评论或文章不存在"}}
+    ```     
+    ### 错误返回
+    ```json
+    {"status": 20000, "msg": "异常错误"}}
+    ```  
+    @@@
+    """				
 		try:
 			# 收集参数
 			cid=int(request.args.get("cid").strip()) if request.args.get("cid") else 0
@@ -28,6 +67,47 @@ class Comments(Resource):
 			return to_dict_msg(20000)
 	# 创建评论接口
 	def post(self):
+		"""创建评论接口
+
+    @@@
+    ### description
+    > 创建评论接口
+
+    ### args
+    |  args | nullable | request type | type |  remarks |
+    |-------|----------|--------------|------|----------|
+    |  aid   |  false   |    args      | str  | 文章id |
+    |  content    |  true   |    form       | str  | 内容 |
+    |  create_time   |   false   |     form       | str  | 创建时间  |
+    |  art   |  false   |     form       | str  | art |
+    |  uid    |  false   |     form       | str  | 文章 |
+    
+
+    ### request
+    ```json
+    {
+        "aid": "xxx",
+        'content':'xxx'
+				"create_time": "xxx",
+        'art':'xxx'
+				"uid": "xxx"
+    }
+    ```
+
+    ### 重置密码成功返回
+    ```json
+    {"status": 200, "msg": "评论成功"}
+    ``` 
+    ### 没有此数据返回
+    ```json
+    {"status": 10029, "msg": "评论失败"}}
+    ```     
+    ### 错误返回
+    ```json
+    {"status": 20000, "msg": "异常错误"}}
+    ```  
+    @@@
+    """		
 		try:
 			# 收集参数
 			aid=int(request.args.get('aid').strip()) if request.args.get('aid') else 0
@@ -48,7 +128,46 @@ class Comments(Resource):
 			print(e)
 			return to_dict_msg(20000)
 	def put(self):
-		try:
+		"""收集参数
+
+    @@@
+    ### description
+    > 收集参数
+
+    ### args
+    |  args | nullable | request type | type |  remarks |
+    |-------|----------|--------------|------|----------|
+    |  cid   |  false   |    form      | str  | 评论id |
+    |  create_time   |   false   |     form       | str  | 创建时间  |
+		|  content    |  true   |    form       | str  | 内容 |
+    |  comment   |  false   |     query       | str  | 评论 |
+    
+
+    ### request
+    ```json
+    {
+        "cid": "xxx",
+				"create_time": "xxx",
+        'content':'xxx',				
+        'comment':'xxx'
+    }
+    ```
+
+    ### 重置密码成功返回
+    ```json
+    {"status": 200, "msg": "评论成功"}
+    ``` 
+    ### 没有此数据返回
+    ```json
+    {"status": 10029, "msg": "评论失败"}}
+    ```     
+    ### 错误返回
+    ```json
+    {"status": 20000, "msg": "异常错误"}}
+    ```  
+    @@@
+    """				
+		try:			
 			cid=int(request.form.get("id"))
 			create_time=request.form.get("create_time").strip() if request.form.get("create_time") else datetime.now()
 			content=request.form.get("content") if request.form.get("content") else ''
@@ -66,6 +185,41 @@ class Comments(Resource):
 			print(e)
 			return to_dict_msg(20000)
 	def delete(self):
+		"""获取指定用户指定文章的所有评论
+
+    @@@
+    ### description
+    > 获取指定用户指定文章的所有评论
+
+    ### args
+    |  args | nullable | request type | type |  remarks |
+    |-------|----------|--------------|------|----------|
+    |  id   |  false   |    args      | str  | 评论id |
+    |  comment   |  false   |     query       | str  | 评论 |
+    
+
+    ### request
+    ```json
+    {
+        "id": "xxx",				
+        'comment':'xxx'
+    }
+    ```
+
+    ### 重置密码成功返回
+    ```json
+    {"status": 200, "msg": "评论成功"}
+    ``` 
+    ### 没有此数据返回
+    ```json
+    {"status": 10030, "msg": "指定评论或文章不存在"}}
+    ```     
+    ### 错误返回
+    ```json
+    {"status": 20000, "msg": "异常错误"}}
+    ```  
+    @@@
+    """					
 		try:
 			id=int(request.args.get("id").strip()) if request.args.get("id") else 0
 			comment=models.Comment.query.get(id)
@@ -81,8 +235,9 @@ class Comments(Resource):
 
 # 获取指定用户指定文章的所有评论
 @comments.route('/GetAllComments',methods=["GET"])
-def getcomments():
+def getcomments():	
 	try:
+
 		# # 如果获取指定用户的指定文章的所有评论
 		# if type=='all':
 		# 	uid=int(request.args.get("uid").strip()) if request.args.get("uid") else 0
@@ -123,6 +278,47 @@ def getcomments():
 # 点赞数和评论数增加接口
 @comments.route("/addcom",methods=["POST"])
 def addthumb():
+		"""点赞数和评论数增加接口
+
+    @@@
+    ### description
+    > 点赞数和评论数增加接口
+
+    ### args
+    |  args | nullable | request type | type |  remarks |
+    |-------|----------|--------------|------|----------|
+    |  cid   |  false   |    args      | str  | 评论id |		
+    |  aid   |  false   |    args      | str  | 文章id |
+    |  comment   |   false   |     query       | str  | 评论  |
+    |  art   |  false   |     query       | str  | art |
+    |  type    |  true   |     args       | str  | 文章 |
+    
+
+    ### request
+    ```json
+    {
+        "cid": "xxx",
+        'aid':'xxx'
+				"comment": "xxx",
+        'art':'xxx'
+				"type": "xxx"
+    }
+    ```
+
+    ### 重置密码成功返回
+    ```json
+    {"status": 200, "msg": "评论成功"}
+    ``` 
+    ### 没有此数据返回
+    ```json
+    {"status": 10028, "msg": "请指定点赞或浏览"}}
+    ```     
+    ### 错误返回
+    ```json
+    {"status": 20000, "msg": "异常错误"}}
+    ```  
+    @@@
+    """			
 		try:
 			# 获取用户id和文章id
 			cid=int(request.args.get('cid').strip()) if request.args.get('cid') else 0
@@ -143,8 +339,8 @@ def addthumb():
 			print(e)
 			return to_dict_msg(20000)
 @comments.route("/getArticleToComment",methods=['GET'])
-def getArticleToComment():
-	try:
+def getArticleToComment():	
+	try:		
 		id=request.args.get("id")
 		comments=models.Comment.query.filter_by(aid=id).all()
 		if comments:
@@ -157,8 +353,8 @@ def getArticleToComment():
 		return to_dict_msg(20000)
 
 @comments.route("/publishComment",methods=['POST'])
-def publishComment():
-	try:
+def publishComment():			
+	try:	
 		id=int(request.form.get('id')) if request.form.get('id') else 0
 		content=request.form.get('content')
 		art=models.Article.query.get(id)

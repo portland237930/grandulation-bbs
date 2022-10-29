@@ -4,11 +4,11 @@
              class="el-menu-demo"
              mode="horizontal"
              @select="handleSelect"
-             background-color="#ffffff"
-             text-color="#2f3542"
-             active-text-color="#1e90ff">
+             background-color="#333333"
+             text-color="#eeeeee"
+             active-text-color="#eeeeee">
       <el-menu-item index="1">社区</el-menu-item>
-      <el-menu-item index="2">学习</el-menu-item>
+      <!-- <el-menu-item index="2">学习</el-menu-item> -->
       <el-menu-item index="3">等你来问</el-menu-item>
       <el-submenu index="4">
         <template slot="title">我的
@@ -21,10 +21,8 @@
         <el-autocomplete v-model="state"
                          :fetch-suggestions="querySearchAsync"
                          placeholder="请输入标题"></el-autocomplete>
-        <el-button slot="append"
-                   class="btn"
-                   @click="GoSearch"
-                   icon="el-icon-search"></el-button>
+        <i class="btn el-icon-search"
+           @click="GoSearch"></i>
       </div>
     </el-menu>
   </div>
@@ -165,9 +163,16 @@ export default {
   height: 61px;
   margin-right: 300px;
   line-height: 61px;
+  position: relative;
 }
 .el-button {
   border: none;
+}
+.btn {
+  position: absolute;
+  top: 40%;
+  color: #333333;
+  right: 18px;
 }
 .el-button:hover {
   background-color: #fff;

@@ -68,68 +68,71 @@
       </div>
       <!--主体的右边-->
       <div class="main-right">
-        <!--第一部分-->
-        <div class="main-right-top">
-          <Carousle :imglist="imglist" />
-        </div>
+        <el-card style="width:100%;height:100%;">
+          <!--第一部分-->
+          <div class="main-right-top">
+            <Carousle :imglist="imglist" />
+          </div>
 
-        <!--第三部分-->
-        <div class="main-right-bottom">
-          <ul>
-            <li>
-              <div>
+          <!--第三部分-->
+          <div class="main-right-bottom">
+            <ul>
+              <li>
+                <div>
+                  <a href="#"
+                     class="title">今日公告</a>
+                  <p>小程序发布于xxxx</p>
+                </div>
                 <a href="#"
-                   class="title">今日公告</a>
-                <p>小程序发布于xxxx</p>
-              </div>
-              <a href="#"
-                 class="focus">敬请期待</a>
-            </li>
-            <li>
-              <div>
-                <a href="http://localhost:5000/docs/api"
-                   class="title">开发文档</a>
-                <p>开发文档全公布</p>
-              </div>
-              <a href="#"
-                 class="focus">敬请期待</a>
-            </li>
-            <li>
-              <div>
+                   class="focus">敬请期待</a>
+              </li>
+              <li>
+                <div>
+                  <a href="http://localhost:5000/docs/api"
+                     class="title">开发文档</a>
+                  <p>开发文档全公布</p>
+                </div>
                 <a href="#"
-                   class="title">关于我们</a>
-                <p>站长的信息噢</p>
-              </div>
-              <a href="#"
-                 class="focus">敬请期待</a>
-            </li>
-            <li>
-              <div>
+                   class="focus">敬请期待</a>
+              </li>
+              <li>
+                <div>
+                  <a href="#"
+                     class="title">关于我们</a>
+                  <p>站长的信息噢</p>
+                </div>
                 <a href="#"
-                   class="title">开发日志</a>
-                <p>毕业设计记录</p>
-              </div>
-              <a href="#"
-                 class="focus">敬请期待</a>
-            </li>
-            <li>
-              <!-- <a class="author-icon"
+                   class="focus">敬请期待</a>
+              </li>
+              <li>
+                <div>
+                  <a href="#"
+                     class="title">开发日志</a>
+                  <p>毕业设计记录</p>
+                </div>
+                <a href="#"
+                   class="focus">敬请期待</a>
+              </li>
+              <li>
+                <!-- <a class="author-icon"
                  href="#"><img src="@/assets/wechat.png"
                      alt=""></a> -->
-              <div>
+                <div>
+                  <a href="#"
+                     class="title">扫码下载蓝牙小程序</a>
+                  <p>蓝牙控制端小程序</p>
+                </div>
                 <a href="#"
-                   class="title">扫码下载蓝牙小程序</a>
-                <p>蓝牙控制端小程序</p>
-              </div>
-              <a href="#"
-                 class="focus">关注我们</a>
-            </li>
-          </ul>
-          <a href="#"
-             class="main-right-bottom-footer">
-            查看全部
-          </a>
-        </div>
+                   class="focus">关注我们</a>
+              </li>
+            </ul>
+            <a href="#"
+               class="main-right-bottom-footer">
+              查看全部
+            </a>
+          </div>
+        </el-card>
+
       </div>
     </section>
   </div>
@@ -370,7 +373,6 @@ input {
 }
 
 #main .main-right {
-  width: 300px;
   height: 800px;
   position: fixed;
   right: 300px;

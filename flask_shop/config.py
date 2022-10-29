@@ -34,7 +34,8 @@ class Config:
 class DevelopmentConfig(Config):
     DEBUG = True
 class ProductionConfig(Config):
-    pass
+    PORT=11010
+    HOST='0.0.0.0'
 
 config_map={
     'develop':DevelopmentConfig,

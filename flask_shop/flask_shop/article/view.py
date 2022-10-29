@@ -10,6 +10,42 @@ import datetime
 class Article(Resource):
 	# 获取指定文章
 	def get(self):
+		"""获取指定文章
+
+    @@@
+    ### description
+    > 获取指定文章
+
+    ### args
+    |  args | nullable | request type | type |  remarks |
+    |-------|----------|--------------|------|----------|
+    |  uid   |  true   |    args      | str  | 文章 |
+    |  type    |  false   |    args       | str  | 类型 |
+    
+
+    ### request
+    ```json
+    {
+        "uid": "xxx",
+				"type": "xxx",
+        'usr':'xxx'
+    }
+    ```
+
+    ### 重置密码成功返回
+    ```json
+    {"status": 200, "msg": "评论成功"}
+    ``` 
+    ### 没有此数据返回
+    ```json
+    {"status": 10026, "msg": "指定文章不存在"}}
+    ```     
+    ### 错误返回
+    ```json
+    {"status": 20000, "msg": "异常错误"}}
+    ```  
+    @@@
+    """		
 		try:
 			# 收集参数
 			uid=int(request.args.get('uid').strip() if request.args.get('uid') else '')
@@ -38,6 +74,45 @@ class Article(Resource):
 			return to_dict_msg(20000)
 	# 指定用户添加文章接口
 	def post(self):
+		"""指定用户添加文章接口
+
+    @@@
+    ### description
+    > 指定用户添加文章接口
+
+    ### args
+    |  args | nullable | request type | type |  remarks |
+    |-------|----------|--------------|------|----------|
+    |  id   |  false   |    form      | str  | id |
+    |  title    |  false   |    form       | str  | 标题 |
+		|  content   |  false   |    form      | str  | 内容 |
+    |  cover    |  false   |    form       | str  | 封面 |
+    
+
+    ### request
+    ```json
+    {
+        "id": "xxx",
+				"title": "xxx",
+				"content": "xxx",
+        'cover':'xxx'
+    }
+    ```
+
+    ### 重置密码成功返回
+    ```json
+    {"status": 200, "msg": "评论成功"}
+    ``` 
+    ### 没有此数据返回
+    ```json
+    {"status": 200, "msg": "10025"}}
+    ```     
+    ### 错误返回
+    ```json
+    {"status": 20000, "msg": "异常错误"}}
+    ```  
+    @@@
+    """			
 		try:
 					# 收集参数
 			id=int(request.form.get("id").strip())
@@ -62,6 +137,47 @@ class Article(Resource):
 			return to_dict_msg(20000)
 	# 修改文章接口
 	def put(self):
+		"""修改文章接口
+
+    @@@
+    ### description
+    > 修改文章接口
+
+    ### args
+    |  args | nullable | request type | type |  remarks |
+    |-------|----------|--------------|------|----------|
+    |  uid   |  false   |    form      | str  | 文章 |
+    |  aid    |  false   |    form       | str  | 文章id |
+		|  content   |  false   |    form      | str  | 内容 |
+    |  title    |  false   |    form       | str  | 标题 |
+		|  cover   |  false   |    form      | str  | 封面 |
+    
+
+    ### request
+    ```json
+    {
+        "uid": "xxx",
+				"aid": "xxx",
+				"content": "xxx",
+				"title": "xxx",
+        'comment':'xxx'
+    }
+    ```
+
+    ### 重置密码成功返回
+    ```json
+    {"status": 200, "msg": "评论成功"}
+    ``` 
+    ### 没有此数据返回
+    ```json
+    {"status": 10027, "msg": "指定文章或用户不存在"}}
+    ```     
+    ### 错误返回
+    ```json
+    {"status": 20000, "msg": "异常错误"}}
+    ```  
+    @@@
+    """			
 		try:
 			# 获取指定参数
 			uid=int(request.form.get('uid').strip()) if request.form.get('uid') else 0
@@ -103,6 +219,59 @@ class Article(Resource):
 # 点赞数和评论数增加接口
 @article.route("/addart",methods=["POST"])
 def addthumb():
+		"""点赞数和评论数增加接口
+
+    @@@
+    ### description
+    > 点赞数和评论数增加接口
+
+    ### args
+    |  args | nullable | request type | type |  remarks |
+    |-------|----------|--------------|------|----------|
+    |  uid   |  false   |    form      | str  | 文章 |
+    |  aid    |  false   |    form       | str  | 文章id |
+		|  type   |  false   |    form      | str  | 类型 |
+    
+
+    ### request
+    ```json
+    {
+        "uid": "xxx",
+				"aid": "xxx",
+				"type": "xxx"
+    }
+    ```
+
+    ### 重置密码成功返回
+    ```json
+    {"status": 200, "msg": "点赞成功"}
+    ``` 
+   	### 重置密码成功返回
+    ```json
+    {"status": 200, "msg": "点赞成功"}
+    ```
+		### 重置密码成功返回
+    ```json
+    {"status": 200, "msg": "取消点赞成功"}
+    ```
+		### 重置密码成功返回
+    ```json
+    {"status": 10028, "msg": "请指定点赞或浏览"}
+    ```
+		### 重置密码成功返回
+    ```json
+    {"status": 200, "msg": "浏览成功"}
+    ```			
+    ### 没有此数据返回
+    ```json
+    {"status": 10028, "msg": "请指定点赞或浏览"}}
+    ```     
+    ### 错误返回
+    ```json
+    {"status": 20000, "msg": "异常错误"}}
+    ```  
+    @@@
+    """			
 		try:
 			# 获取用户id和文章id
 			uid=int(request.form.get('uid').strip()) if request.form.get('uid') else 0
